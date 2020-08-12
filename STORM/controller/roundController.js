@@ -10,8 +10,7 @@ module.exports = {
     const project_idx = req.params.project_idx;
 
     if (!project_idx) {
-      res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.ROUND_COUNT_FAIL));
-      return;
+      return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.ROUND_COUNT_FAIL));
     }
 
     const count = await RoundDao.countInfo(project_idx);
@@ -19,7 +18,7 @@ module.exports = {
       return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.ROUND_COUNT_FAIL));
     }
 
-    res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.ROUND_COUNT_SUCCESS, count));
+    return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.ROUND_COUNT_SUCCESS, count));
   },
 
   //라운드 정보 새로 추가
@@ -27,11 +26,11 @@ module.exports = {
     const { project_idx, round_purpose, round_time } = req.body;
 
     if (!project_idx || !round_purpose || !round_time) {
-      res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.ROUND_SETTING_FAIL));
+      return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.ROUND_SETTING_FAIL));
     }
     const result = await RoundDao.roundSetting(project_idx, round_purpose, round_time);
 
-    res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.ROUND_SETTING_SUCCESS, result));
+    return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.ROUND_SETTING_SUCCESS, result));
   },
 
   //라운드 정보 출력
@@ -39,11 +38,11 @@ module.exports = {
     const project_idx = req.params.project_idx;
 
     if (!project_idx) {
-      res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.ROUND_SETTING_FAIL));
+      return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.ROUND_INFO_FAIL));
     }
 
     const result = await RoundDao.roundInfo(project_idx);
-    res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.ROUND_INFO_SUCCESS, {
+    return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.ROUND_INFO_SUCCESS, {
       "round_idx": result[0].round_idx,
       "round_number": result[0].round_number,
       "round_purpose": result[0].round_purpose,
@@ -68,9 +67,7 @@ module.exports = {
 
     const result = await RoundDao.roundEnter(user_idx, round_idx);
 
-    res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.ROUND_ENTER_SUCCESS));
-
-    
+    return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.ROUND_ENTER_SUCCESS));
   },
 
   
@@ -82,23 +79,24 @@ module.exports = {
   console.log(user_idx, round_idx);
 
   if (!user_idx || !round_idx) {
-    res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.ROUND_SETTING_FAIL));
+    return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.ROUND_LEAVE_FAIL));
   }
   const result = await RoundDao.roundLeave(user_idx, round_idx);
 
-  res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.ROUND_LEAVE_SUCCESS));
+  return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.ROUND_LEAVE_SUCCESS));
   },
   
 
   //라운드 참여자 목록 조회 - round_participant 정보 출력
   roundParticipant: async (req, res) => {
     const round_idx = req.params.round_idx;
+
     if (!round_idx) {
-      res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.ROUND_MEMBERLIST_FAIL));
+      return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.ROUND_MEMBERLIST_FAIL));
     }
 
     const result = await RoundDao.roundMemberList(round_idx);
-    res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.ROUND_MEMBERLIST_SUCCESS, result));
+    return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.ROUND_MEMBERLIST_SUCCESS, result));
   },
 
   //라운드 카드 리스트 - 해당 라운드의 카드 전체 출력
@@ -107,18 +105,21 @@ module.exports = {
     const round_idx = req.params.round_idx;
 
     if (!project_idx || !round_idx) {
-      res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VAULE));
+      return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.GET_ROUND_CARD_LIST_FAIL));
     }
     const result = await RoundDao.roundCardList(project_idx, round_idx);
-    res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.GET_ROUND_CARD_LIST_SUCCESS, result));
+    return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.GET_ROUND_CARD_LIST_SUCCESS, result));
   },
 
   //전체 라운드 정보 출력
   roundFinalInfo: async (req, res) => {
     const project_idx = req.params.project_idx;
 
+    if(!project_idx){
+      return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.ROUND_FINALINFO_FAIL));
+    }
     const result = await RoundDao.roundFinalInfo(project_idx);
 
-    res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.ROUND_FINALINFO_SUCCESS, result));
+    return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.ROUND_FINALINFO_SUCCESS, result));
   }
 }

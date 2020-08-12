@@ -48,6 +48,7 @@ module.exports = {
     ROUND_COUNT_SUCCESS: "라운드 카운트 정보 출력 성공",
     ROUND_COUNT_FAIL: "라운드 카운트 정보 출력 실패",
     GET_ROUND_CARD_LIST_SUCCESS : "라운드 카드 정보 출력 성공",
+    GET_ROUND_CARD_LIST_FAIL: "라운드 카드 정보 출력 실패",
     GET_ROUND_INFO_SUCCESS: "라운드 정보 출력 성공",
 
     //라운드 셋팅
