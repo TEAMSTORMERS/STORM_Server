@@ -36,7 +36,7 @@ module.exports = {
 
     //프로필조회
     getMypage : async (user_idx) => {
-        const query = `SELECT user_img, user_name FROM user WHERE user_idx = ${user_idx}`;
+        const query = `SELECT user_img, user_name, user_img_flag FROM user WHERE user_idx = ${user_idx}`;
         try{
             const result = await pool.queryParam(query);
             return result;
@@ -47,8 +47,8 @@ module.exports = {
     },
 
         //프로필이미지변경
-    changeProfileImg : async (user_idx, user_img) => {
-        const query = `UPDATE user SET user_img = ${user_img} WHERE user_idx = ${user_idx}`;
+    changeProfileImg : async (user_idx, user_img, user_img_flag) => {
+        const query = `UPDATE user SET user_img = "${user_img}", user_img_flag = ${user_img_flag} WHERE user_idx = ${user_idx}`;
         try{
             const result = await pool.queryParam(query);
             return result;
@@ -61,7 +61,7 @@ module.exports = {
 
     //프로필이름변경
     changeProfileName : async (user_idx, user_name) => {
-        const query = `UPDATE user SET user_name = ${user_name} WHERE user_idx = ${user_idx}`;
+        const query = `UPDATE user SET user_name = "${user_name}" WHERE user_idx = ${user_idx}`;
         try{
             const result = await pool.queryParam(query);
             return result;
