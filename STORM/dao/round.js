@@ -99,16 +99,23 @@ module.exports = {
                         FROM round_participant rp JOIN round r ON r.round_idx = rp.round_idx
                         WHERE r.round_idx = ${round_idx}`;
 
+        const query2 = `SELECT project_idx FROM round WHERE round_idx = ${round_idx}`;
+
         try{
             const round_user = await pool.queryParam(query1);
+            const project_idx = await pool.queryParam(query2);
            
             const array = [];
             for(var i=round_user.length-1; i>= 0; i--){
-                const query2 = `SELECT user_name, user_img FROM user WHERE user_idx = ${round_user[i]["user_idx"]}`;
-                const result2 = await pool.queryParam(query2);
+                const query3 = `SELECT user_name, user_img FROM user WHERE user_idx = ${round_user[i]["user_idx"]}`;
+                const result1 = await pool.queryParam(query3);
+                const query4 = `SELECT project_participant_host_idx FROM project_participant_host WHERE user_idx = ${user_idx} AND project_idx = ${project_idx}`;
+                const result2 = await pool.queryParam(query4);
+                
                 var data = new Object();
-                data.user_name = result2[0].user_name;
-                data.user_img = result2[0].user_img;
+                data.user_name = result1[0].user_name;
+                data.user_img = result1[0].user_img;
+                data.user_host_flag = result2[0].user_host_flag;
                 array.push(data);
             }
             return array;
