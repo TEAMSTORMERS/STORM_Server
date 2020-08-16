@@ -18,8 +18,8 @@ module.exports = {
         }
     },
 
-    checkProjectCode: async (project_code) => {
-        const query = `SELECT project_code FROM project WHERE project_code = "${project_code}"`;
+    getProjectInfoPopUp: async (project_code) => {
+        const query = `SELECT project_name, project_comment FROM project WHERE project_code = "${project_code}"`;
         try{
             const result = await pool.queryParam(query);
             return result;
@@ -247,8 +247,20 @@ module.exports = {
             throw err;
         }
     },
-    statusProject: async(project_idx) => {
+
+    setProjectStatus: async(project_idx) => {
         const query = `UPDATE project SET project_status = 1 WHERE project_idx = ${project_idx}`;
+        try{
+            const result = await pool.queryParam(query);
+            return result
+        }catch(err){
+            console.log('finalScarpList ERROR : ', err);
+            throw err;
+        }
+    },
+
+    finishProject: async(project_idx) => {
+        const query = `UPDATE project SET project_code = NULL WHERE project_idx = ${project_idx}`;
         try{
             const result = await pool.queryParam(query);
             return result

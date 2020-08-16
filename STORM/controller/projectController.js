@@ -14,8 +14,36 @@ module.exports = {
           res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
           return;
         }
-        //랜덤 코드 생성
-        let project_code = Math.random().toString(36).substr(2, 11);
+        
+        
+        //랜덤 프로젝트 코드 생성 과정
+        let possibleAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        let possibleNumber = "1234567890";
+        let project_code="";
+
+        let flag = 0;   //코드 중복 확인할 변수
+
+        do{
+        let array = [];
+
+        //알파벳 대문자 3자, 숫자 3자의 조합이어야 함
+        for(let i = 0; i < 3; i++){
+            array.push(possibleAlphabet.charAt(Math.floor(Math.random() * possibleAlphabet.length)));
+            array.push(possibleNumber.charAt(Math.floor(Math.random() * possibleNumber.length)));
+        }
+
+        //해당 배열을 랜덤으로 섞을 함수
+        function shuffle(array) {
+            array.sort(() => Math.random() - 0.5);
+        }
+
+        shuffle(array);
+        project_code = array.join("");  //배열을 문자열로 변경
+
+        //생성된 코드가 이미 DB에 존재하는지 확인(이미 존재하면 랜덤코드 생성 과정 반복)
+        flag = await ProjectDao.checkAlreadyProjectCode(project_code);
+        }while(flag === 1);
+
 
 
         //오늘 날짜 데이터 생성
@@ -180,8 +208,26 @@ module.exports = {
         return res.status(statusCode.OK)
             .send(util.success(statusCode.OK, resMessage.DELETE_PROJECT_PARTICIPANT_SUCCESS));
     },
-    
 
+    //프로젝트 코드를 입력할 경우 해당하는 프로젝트 정보를 반환(팝업)
+    getProjectInfoPopUp: async (req, res) => {
+        const project_code = req.params.project_code;
+
+        //값이 제대로 들어오지 않았을 경우
+        if (!project_code) {
+            res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
+            return;
+        }
+
+        const result = await ProjectDao.getProjectInfoPopUp(project_code);
+
+        return res.status(statusCode.OK)
+            .send(util.success(statusCode.OK, resMessage.READ_PROJECT_INFO, {
+                "project_name": result[0].project_name,
+                "project_comment": result[0].project_comment
+            }
+        ));
+    },
 
     //참여한 프로젝트 이름과 카드 반환
     showAllProject: async (req, res) => {
@@ -233,12 +279,22 @@ module.exports = {
             .send(util.success(statusCode.OK, resMessage.ROUND_FINALINFO_SUCCESS, result));
     },
     
-    statusProject: async (req, res) => {
+    setProjectStatus: async (req, res) => {
         const project_idx = req.params.project_idx;
 
-        const result = await ProjectDao.statusProject(project_idx);
+        const result = await ProjectDao.setProjectStatus(project_idx);
         
         return res.status(statusCode.OK)
             .send(util.success(statusCode.OK, resMessage.UPDATE_PROJECT_STATUS_SUCCESS));
+    },
+
+    finishProject: async (req, res) => {
+        const project_idx = req.body.project_idx;
+
+        const result = await ProjectDao.finishProject(project_idx);
+        
+        return res.status(statusCode.OK)
+            .send(util.success(statusCode.OK, resMessage.DELETE_PROJECT_CODE_SUCCESS));
     }
+
 }

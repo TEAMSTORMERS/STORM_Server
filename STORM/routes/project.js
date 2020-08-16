@@ -10,6 +10,8 @@ router.get('/enter/:project_idx', projectController.getProjectparticipant);
 router.delete('/:user_idx/:project_idx', projectController.deleteProjectparticipant);
 router.get('/finalInfo/:project_idx', projectController.finalInfo);
 router.get('/finalScarpList/:user_idx/:project_idx', projectController.finalScrapList);
-router.put('/status/:project_idx', projectController.statusProject);
+router.put('/status/:project_idx', projectController.setProjectStatus);
+router.get('/info/:project_code', projectController.getProjectInfoPopUp);
+router.put('/finish', projectController.finishProject);
 
 module.exports = router;
