@@ -72,6 +72,7 @@ module.exports = {
         }
         
     },
+  
     signOut: async(user_idx, salt, user_password, reason) => {
         const query = `DELETE FROM user  WHERE user_idx = ${user_idx} AND salt = "${salt}" AND user_password = "${user_password}"`;
         const query2 = `INSERT INTO delete_account(reason) VALUES ("${reason}")`;
@@ -89,6 +90,7 @@ module.exports = {
             return false;
         }
     },
+
     checkUserIdx : async (user_idx) => {
         const query = `SELECT COUNT(*) FROM user WHERE user_idx = ${user_idx}`;
         try{
@@ -113,7 +115,7 @@ module.exports = {
         }
     },
 
-        //프로필이미지변경
+    //프로필이미지변경
     changeProfileImg : async (user_idx, user_img, user_img_flag) => {
         const query = `UPDATE user SET user_img = "${user_img}", user_img_flag = ${user_img_flag} WHERE user_idx = ${user_idx}`;
         try{
@@ -138,7 +140,4 @@ module.exports = {
             //throw err;
         }
     }
-
-
-
 }

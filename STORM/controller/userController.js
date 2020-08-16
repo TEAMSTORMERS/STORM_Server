@@ -17,16 +17,12 @@ module.exports = {
       return;
     }
 
-
     if(await UserDao.checkUserByEmail(user_email)){
       return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.ALREADY_ID)); 
     }
 
     //2. 새로운 User를 등록한다.
     const {salt, hashed} = await encrypt.encrypt(user_password);
-
-    
-
     const idx = await UserDao.signup(user_name, user_email, hashed, salt, user_img, user_img_flag);
     if (idx === -1) {
       return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
@@ -46,13 +42,12 @@ module.exports = {
       return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
     }
 
-
     const salt = await UserDao.checkUserByEmail(user_email);
     console.log(salt);
 
     const hashed = await encrypt.encryptWithSalt(user_password, salt);
-
     console.log(hashed);
+    
     const user = await UserDao.signIn(user_email, salt, hashed);
 
     if(!user){
@@ -168,7 +163,4 @@ module.exports = {
     //3. 수정 성공
     res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.CHANGE_PROFILE_NAME_SUCCESS));
   }
-  
-  
-
 }
