@@ -11,20 +11,24 @@ module.exports = {
         const query = `INSERT INTO project (${fields}) VALUES (${questions})`;
         try {
             const result = await pool.queryParamArr(query, values);
-            return result;
+            const insertId = result.insertId;
+            return insertId;
         } catch (err) {
             console.log('createProject ERROR : ', err);
-            throw err;
+            return -1;
+            //throw err;
         }
     },
 
-    checkProjectCode: async (project_code) => {
-        const query = `SELECT project_code FROM project WHERE project_code = "${project_code}"`;
+    getProjectInfoPopUp: async (project_code) => {
+        const query = `SELECT project_name, project_comment FROM project WHERE project_code = "${project_code}"`;
         try{
             const result = await pool.queryParam(query);
             return result;
         }catch(err){
-            console.log(err)
+            console.log('getProjectInfoPopUp ERROR : ', err);
+            return -1;
+            //throw err;
         }
     },
 
@@ -36,7 +40,8 @@ module.exports = {
             return result;
         } catch (err) {
             console.log('checkProjectIdx ERROR : ', err);
-            throw err;
+            return -1;
+            //throw err;
         }
     },
 
@@ -48,7 +53,8 @@ module.exports = {
             return result;
         } catch (err) {
             console.log('checkProjectStatus ERROR : ', err);
-            throw err;
+            return -1;
+            //throw err;
         }
     },
 
@@ -64,7 +70,8 @@ module.exports = {
             return insertId;
         } catch (err) {
             console.log('memberEnterProject ERROR : ', err);
-            throw err;
+            return -1;
+            //throw err;
         }
     },
 
@@ -80,7 +87,8 @@ module.exports = {
             return insertId;
         } catch (err) {
             console.log('hostEnterProject ERROR : ', err);
-            throw err;
+            return -1;
+            //throw err;
         }
     },
 
@@ -92,7 +100,8 @@ module.exports = {
             return result;
         } catch (err) {
             console.log('getProjectInfo ERROR : ', err);
-            throw err;
+            return -1;
+            //throw err;
         }
     },
 
@@ -106,7 +115,8 @@ module.exports = {
             return result;
         } catch (err) {
             console.log('getProjectparticipant ERROR : ', err);
-            throw err;
+            return -1;
+            //throw err;
         }
     },
 
@@ -120,7 +130,8 @@ module.exports = {
             return result;
         } catch (err) {
             console.log('checkProjectParticipantIdx ERROR : ', err);
-            throw err;
+            return -1;
+            //throw err;
         }
     },
 
@@ -134,7 +145,8 @@ module.exports = {
 
         } catch (err) {
             console.log('deleteProjectparticipant ERROR : ', err);
-            throw err;
+            return -1;
+            //throw err;
         }
 
     },
@@ -150,7 +162,8 @@ module.exports = {
 
         } catch (err) {
             console.log('checkHost ERROR : ', err);
-            throw err;
+            return -1;
+            //throw err;
         }
 
     },
@@ -165,7 +178,8 @@ module.exports = {
             return result;
         } catch (err) {
             console.log('getProjectIdx ERROR : ', err);
-            throw err;
+            return -1;
+            //throw err;
         }
     },
 
@@ -177,7 +191,8 @@ module.exports = {
             return result;
         } catch (err) {
             console.log('getProjectCard ERROR : ', err);
-            throw err;
+            return -1;
+            //throw err;
         }
     },
 
@@ -208,7 +223,8 @@ module.exports = {
             return data;
         } catch (err) {
             console.log('finalInfo ERROR : ', err);
-            throw err;
+            return -1;
+            //throw err;
         }
     },
 
@@ -244,17 +260,32 @@ module.exports = {
 
         } catch (err) {
             console.log('finalScarpList ERROR : ', err);
-            throw err;
+            return -1;
+            //throw err;
         }
     },
-    statusProject: async(project_idx) => {
+
+    setProjectStatus: async(project_idx) => {
         const query = `UPDATE project SET project_status = 1 WHERE project_idx = ${project_idx}`;
         try{
             const result = await pool.queryParam(query);
             return result
         }catch(err){
             console.log('finalScarpList ERROR : ', err);
-            throw err;
+            return -1;
+            //throw err;
+        }
+    },
+
+    finishProject: async(project_idx) => {
+        const query = `UPDATE project SET project_code = NULL WHERE project_idx = ${project_idx}`;
+        try{
+            const result = await pool.queryParam(query);
+            return result
+        }catch(err){
+            console.log('finalScarpList ERROR : ', err);
+            return -1;
+            //throw err;
         }
     },
 

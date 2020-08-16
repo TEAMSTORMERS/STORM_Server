@@ -30,9 +30,6 @@ module.exports = {
     CREATED_PROJECT_SUCCESS: "프로젝트 생성 성공",
     CREATED_PROJECT_FAIL : "프로젝트 생성 실패",
 
-    //프로젝트 코드 중복체크
-    CHECK_PROJECT_CODE_FAIL: "프로젝트 코드가 중복됩니다.", 
-
     CANNOT_JOIN : "이미 프로젝트가 진행중입니다.",
     JOIN_PROJECT_SUCCESS: "프로젝트 참여 성공",
     JOIN_PROJECT_FAIL : "프로젝트 참여 실패",
@@ -46,6 +43,7 @@ module.exports = {
     NO_PROJECT_PARTICIPANT : "해당 프로젝트에 참여하고 있는 유저가 아닙니다.",
     GET_PROJECT_LIST_SUCCESS : "참여한 프로젝트의 리스트 조회 성공",
     UPDATE_PROJECT_STATUS_SUCCESS : "프로젝트 상태 변경 성공",
+    DELETE_PROJECT_CODE_SUCCESS : "프로젝트 종료. 프로젝트 코드 삭제 성공.",
 
     //라운드
     ROUND_COUNT_SUCCESS: "라운드 카운트 정보 출력 성공",
@@ -82,7 +80,6 @@ module.exports = {
     //라운드 별 최종 정보
     ROUND_FINALINFO_SUCCESS: "최종 정리 뷰 라운드 별 모든 정보 받아오기 성공.",
     ROUND_FINALINFO_FAIL: "최종 정리 뷰 라운드 별 모든 정보 받아오기 실패했습니다.",
-
 
     //카드
     CREATED_CARD : "카드 추가 성공",
