@@ -20,5 +20,55 @@ module.exports = {
             console.log('signup ERROR : ', err);
             throw err;
         }
+    },
+
+    checkUserIdx : async (user_idx) => {
+        const query = `SELECT COUNT(*) FROM user WHERE user_idx = ${user_idx}`;
+        try{
+            const result = await pool.queryParam(query);
+            return result[0]["COUNT(*)"];
+        }catch (err){
+            console.log('getMypage ERROR : ', err);
+            //throw err;
+            return 0; //숫자가 아닌 값이 들어올 경우 catch에 잡히는데 이때 임의로 0이라는 값을 넘겨서
+        }
+    },
+
+    //프로필조회
+    getMypage : async (user_idx) => {
+        const query = `SELECT user_img, user_name FROM user WHERE user_idx = ${user_idx}`;
+        try{
+            const result = await pool.queryParam(query);
+            return result;
+        }catch (err){
+            console.log('getMypage ERROR : ', err);
+            throw err;
+        }
+    },
+
+        //프로필이미지변경
+    changeProfileImg : async (user_idx, user_img) => {
+        const query = `UPDATE user SET user_img = ${user_img} WHERE user_idx = ${user_idx}`;
+        try{
+            const result = await pool.queryParam(query);
+            return result;
+        }catch (err){
+            console.log('getMypage ERROR : ', err);
+            return -1;
+            //throw err;
+        }
+    },
+
+    //프로필이름변경
+    changeProfileName : async (user_idx, user_name) => {
+        const query = `UPDATE user SET user_name = ${user_name} WHERE user_idx = ${user_idx}`;
+        try{
+            const result = await pool.queryParam(query);
+            return result;
+        }catch (err){
+            console.log('getMypage ERROR : ', err);
+            return -1;
+            //throw err;
+        }
     }
 }
