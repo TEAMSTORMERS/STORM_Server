@@ -17,22 +17,15 @@ module.exports = {
       return;
     }
 
-    /*
-    //예외처리2 : img 형식이 올바르지 않을 경우
-    const type = req.file.mimetype.split('/')[1];
-    if(type !== 'jpeg' && type !== 'jpg' && type !=='png'){
-      return res.status(CODE.OK).send(util.success(statusCode.OK, resMessage.UNSUPPORTED_TYPE));
-    }
 
-    //예외처리2 : 아이디 중복 체크
-    if (await UserModel.checkUser(id)) {
-      res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.ALREADY_ID));
-      return;
+    if(await UserDao.checkUser(user_email)){
+      return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.ALREADY_ID)); 
     }
-    */
 
     //2. 새로운 User를 등록한다.
     const {salt, hashed} = await encrypt.encrypt(user_password);
+
+    
 
     const idx = await UserDao.signup(user_name, user_email, hashed, salt, user_img, user_img_flag);
     if (idx === -1) {
@@ -40,26 +33,33 @@ module.exports = {
     }
 
 
-
     //3. 가입성공
-    res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.CREATED_USER, idx));
+    return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.CREATED_USER, idx));
   },
 
   signIn: async(req, res) => {
     const { user_email, user_password } = req.body;
 
     if(!user_email || !user_password){
+      console.log(user_email);
+      console.log(req.body);
       return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
     }
 
-    const{salt, hashed} = await encrypt.encrypt(user_password);
 
-    if(!salt || !hashed){
-      return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
+    const salt = await UserDao.checkUser(user_email);
+    console.log(salt);
+
+    const hashed = await encrypt.encryptWithSalt(user_password, salt);
+
+    console.log(hashed);
+    const user = await UserDao.signIn(user_email, salt, hashed);
+
+    if(!user){
+      console.log(user);
+      return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.MISS_MATCH_PW));
     }
 
-    const user_idx = await UserDao.signIn(user_email, salt, hashed);
-    res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.LOGIN_SUCCESS, user_idx));
-
+    return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.LOGIN_SUCCESS, user));
   }
 }
