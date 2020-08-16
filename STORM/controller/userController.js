@@ -84,6 +84,91 @@ module.exports = {
     };
 
     return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.DELETE_USER));
+  },
 
+  getMypage : async (req, res) => {
+
+    //1. request body에서 값을 읽어온다.
+    const user_idx = req.params.user_idx;
+    
+    //예외처리1 : user_idx를 입력받지 못했을 경우
+    if (!user_idx) {
+      return res.status(statusCode.BAD_REQUEST).sendzzz(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
+    }
+
+    //예외처리2 : 해당 user_idx가 존재하지 않을 경우
+    const user = await UserDao.checkUserIdx(user_idx);
+    if (user === 0) { //여기서 잡았으
+      return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_USER));
+    }
+
+    //2. 새로운 User를 등록한다.
+    const result = await UserDao.getMypage(user_idx);
+    if (result === -1) {
+      return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
+    }
+
+    //3. 조회성공
+    res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.READ_PROFILE_SUCCESS, {
+      "user_img" : result[0].user_img,
+      "user_name" : result[0].user_name,
+      "user_img_flag" : result[0].user_img_flag
+    }));
+  },
+
+  changeProfileImg : async (req, res) => {
+
+    //1. request body에서 값을 읽어온다.
+    const {user_idx, user_img_flag} = req.body;
+    const user_img = req.file.location;
+    
+    //예외처리1 : 입력받지 못했을 경우
+    if (!user_idx || !user_img || !user_img_flag) {
+      return res.status(statusCode.BAD_REQUEST).sendzzz(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
+    }
+
+    //예외처리2 : 해당 user_idx가 존재하지 않을 경우
+    const user = await UserDao.checkUserIdx(user_idx);
+    if (user === 0) {
+      return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_USER));
+    }
+
+    //2. 새로운 프로필사진을 등록한다.
+    const result = await UserDao.changeProfileImg(user_idx, user_img, user_img_flag);
+    if (result === -1) {
+      return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
+    }
+
+    //3. 수정 성공
+    res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.CHANGE_PROFILE_IMG_SUCCESS));
+  },
+
+  changeProfileName : async (req, res) => {
+
+    //1. request body에서 값을 읽어온다.
+    const {user_idx, user_name} = req.body;
+    
+    //예외처리1 : 입력받지 못했을 경우
+    if (!user_idx || !user_name) {
+      return res.status(statusCode.BAD_REQUEST).sendzzz(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
+    }
+
+    //예외처리2 : 해당 user_idx가 존재하지 않을 경우
+    const user = await UserDao.checkUserIdx(user_idx);
+    if (user === 0) {
+      return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NO_USER));
+    }
+
+    //2. 새로운 닉네임을 등록한다.
+    const result = await UserDao.changeProfileName(user_idx, user_name);
+    if (result === -1) {
+      return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
+    }
+
+    //3. 수정 성공
+    res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.CHANGE_PROFILE_NAME_SUCCESS));
   }
+  
+  
+
 }
