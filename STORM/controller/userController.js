@@ -18,7 +18,7 @@ module.exports = {
     }
 
 
-    if(await UserDao.checkUser(user_email)){
+    if(await UserDao.checkUserByEmail(user_email)){
       return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.ALREADY_ID)); 
     }
 
@@ -47,7 +47,7 @@ module.exports = {
     }
 
 
-    const salt = await UserDao.checkUser(user_email);
+    const salt = await UserDao.checkUserByEmail(user_email);
     console.log(salt);
 
     const hashed = await encrypt.encryptWithSalt(user_password, salt);
@@ -61,5 +61,29 @@ module.exports = {
     }
 
     return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.LOGIN_SUCCESS, user));
+  },
+
+  signOut: async(req, res) => {
+    const { user_idx, user_password, reason} = req.body;
+
+    if(!user_password || !reason){
+      console.log(user_password, reason);
+      return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
+    }
+
+    const salt = await UserDao.checkUserByIdx(user_idx);
+
+    if(!salt){
+      return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
+    }
+
+    const hashed = await encrypt.encryptWithSalt(user_password, salt);
+
+    if(!await UserDao.signOut(user_idx, salt, hashed, reason)){
+      return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
+    };
+
+    return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.DELETE_USER));
+
   }
 }

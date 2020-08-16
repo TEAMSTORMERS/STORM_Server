@@ -40,7 +40,7 @@ module.exports = {
         }
     },
 
-    checkUser: async(user_email) => {
+    checkUserByEmail: async(user_email) => {
         const query = `SELECT salt FROM user WHERE user_email = "${user_email}"`;
 
         try {
@@ -48,12 +48,48 @@ module.exports = {
             return result[0]["salt"];
         } catch (err) {
             if (err.errno == 1062) {
-                console.log('checkUser ERROR : ', err.errno, err.code);
+                console.log('checkUserByEmail ERROR : ', err.errno, err.code);
                 return -1;
             }
-            console.log('checkUser ERROR : ', err);
+            console.log('checkUserByEmail ERROR : ', err);
+            return false;
+        }
+    },
+
+    checkUserByIdx: async(user_idx) => {
+        const query = `SELECT salt FROM user WHERE user_idx = ${user_idx}`;
+
+        try{
+            const result = await pool.queryParam(query);
+            console.log(result);
+            return result[0]["salt"];
+        }catch(err){
+            if (err.errno == 1062) {
+                console.log('checkUserByIdx ERROR : ', err.errno, err.code);
+                return -1;
+            }
+            return false;
+        }
+        
+    },
+    signOut: async(user_idx, salt, user_password, reason) => {
+        const query = `DELETE FROM user  WHERE user_idx = ${user_idx} AND salt = "${salt}" AND user_password = "${user_password}"`;
+        const query2 = `INSERT INTO delete_account(reason) VALUES ("${reason}")`;
+
+        try {
+            await pool.queryParam(query);
+            await pool.queryParam(query2);
+            return true;
+        } catch (err) {
+            if (err.errno == 1062) {
+                console.log('signOut ERROR : ', err.errno, err.code);
+                return -1;
+            }
+            console.log('signOut ERROR : ', err);
             return false;
         }
     }
+
+
 
 }

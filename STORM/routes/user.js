@@ -6,5 +6,7 @@ const upload = require('../modules/multer');
 
 router.post('/signup', upload.single('user_img'), userController.signup);
 router.post('/signin', userController.signIn);
+router.post('/signout', userController.signOut);
+
 
 module.exports = router;
