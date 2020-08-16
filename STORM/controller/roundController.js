@@ -89,13 +89,14 @@ module.exports = {
 
   //라운드 참여자 목록 조회 - round_participant 정보 출력
   roundParticipant: async (req, res) => {
+    const project_idx = req.params.project_idx;
     const round_idx = req.params.round_idx;
 
-    if (!round_idx) {
+    if (!round_idx || !project_idx) {
       return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.ROUND_MEMBERLIST_FAIL));
     }
 
-    const result = await RoundDao.roundMemberList(round_idx);
+    const result = await RoundDao.roundMemberList(project_idx, round_idx);
     return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.ROUND_MEMBERLIST_SUCCESS, result));
   },
 
