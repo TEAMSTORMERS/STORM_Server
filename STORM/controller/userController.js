@@ -45,6 +45,11 @@ module.exports = {
     const salt = await UserDao.checkUserByEmail(user_email);
     console.log(salt);
 
+    if(!salt){
+      console.log(user);
+      return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.MISS_MATCH_PW));
+    }
+
     const hashed = await encrypt.encryptWithSalt(user_password, salt);
     console.log(hashed);
     
@@ -58,7 +63,7 @@ module.exports = {
     return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.LOGIN_SUCCESS, user));
   },
 
-  signOut: async(req, res) => {
+  withDrawal: async(req, res) => {
     const { user_idx, user_password, reason} = req.body;
 
     if(!user_password || !reason){
@@ -74,8 +79,8 @@ module.exports = {
 
     const hashed = await encrypt.encryptWithSalt(user_password, salt);
 
-    if(!await UserDao.signOut(user_idx, salt, hashed, reason)){
-      return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
+    if(!await UserDao.withDrawal(user_idx, salt, hashed, reason)){
+      return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.MISS_MATCH_PW));
     };
 
     return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.DELETE_USER));

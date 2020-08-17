@@ -45,6 +45,7 @@ module.exports = {
 
         try {
             const result = await pool.queryParam(query);
+            console.log(result);
             return result[0]["salt"];
         } catch (err) {
             if (err.errno == 1062) {
@@ -61,7 +62,6 @@ module.exports = {
 
         try{
             const result = await pool.queryParam(query);
-            console.log(result);
             return result[0]["salt"];
         }catch(err){
             if (err.errno == 1062) {
@@ -73,20 +73,24 @@ module.exports = {
         
     },
   
-    signOut: async(user_idx, salt, user_password, reason) => {
+    withDrawal: async(user_idx, salt, user_password, reason) => {
         const query = `DELETE FROM user  WHERE user_idx = ${user_idx} AND salt = "${salt}" AND user_password = "${user_password}"`;
         const query2 = `INSERT INTO delete_account(reason) VALUES ("${reason}")`;
 
         try {
-            await pool.queryParam(query);
-            await pool.queryParam(query2);
-            return true;
+            const result = await pool.queryParam(query);
+            if(result.affectedRows === 1){
+                await pool.queryParam(query2);
+                return true;
+            }else{
+                return false;
+            }
         } catch (err) {
             if (err.errno == 1062) {
-                console.log('signOut ERROR : ', err.errno, err.code);
+                console.log('withDrawal ERROR : ', err.errno, err.code);
                 return -1;
             }
-            console.log('signOut ERROR : ', err);
+            console.log('withDrawal ERROR : ', err);
             return false;
         }
     },
