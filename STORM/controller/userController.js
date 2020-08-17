@@ -13,7 +13,7 @@ module.exports = {
 
     //예외처리1 : parameter 체크 - 하나라도 null이나 undefined가 들어올 경우
     if (!user_name || (!user_email && !user_password) || user_img === undefined) {
-      res.status(statusCode.BAD_REQUEST).sendzzz(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE)); //400은 요청이 잘못됐다는 오류 메세지
+      res.status(statusCode.BAD_REQUEST).sendzzz(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
       return;
     }
 

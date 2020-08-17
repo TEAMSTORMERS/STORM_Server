@@ -45,6 +45,18 @@ module.exports = {
         }
     },
 
+    checkAlreadyProjectCode : async (project_code) => {
+        const query = `SELECT count(*) FROM project WHERE project_code = "${project_code}"`;
+        try {
+            const result = await pool.queryParamArr(query);
+            return result;
+        } catch (err) {
+            console.log('checkProjectStatus ERROR : ', err);
+            return -1;
+            //throw err;
+        }
+    },
+
     //project_idx를 받았을 때 project_status를 반환
     checkProjectStatus: async (project_idx) => {
         const query = `SELECT project_status FROM project WHERE project_idx = "${project_idx}"`;
