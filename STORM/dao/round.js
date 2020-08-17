@@ -47,20 +47,15 @@ module.exports = {
         }
     },
 
-    //project_idx를 받았을 때 project_idx로 round 수 반환해서 round_idx, round_number, round_purpose, round_time를 반환
-    roundInfo: async (project_idx) => {
-        const query1 = `SELECT COUNT(*) FROM round WHERE project_idx = ${project_idx}`
+    //(2라운드 이상부터) project_idx로 가장 최근의 round_idx 찾기
+    checkRoundIdx: async (project_idx) => {
+        const query = `SELECT round_idx FROM round WHERE project_idx = ${project_idx}`
 
         try {
-            const round_count = await pool.queryParam(query1);
-            const round_number = round_count[0]["COUNT(*)"];
-
-            const fields = `round_idx, round_number, round_purpose, round_time`;
-            const query2 = `SELECT ${fields} FROM round WHERE project_idx = ${project_idx} AND round_number = ${round_number}`
-            const result = await pool.queryParam(query2);
-            return result;
+            const result = await pool.queryParam(query);
+            return result[result.length-1]["round_idx"];
         } catch (err) {
-            console.log('roundInfo ERROR : ', err);
+            console.log('checkRoundIdx ERROR : ', err);
             throw err;
         }
     },
@@ -77,6 +72,20 @@ module.exports = {
             return result;
         } catch (err) {
             console.log('roundEnter ERROR : ', err);
+            throw err;
+        }
+    },
+
+    //round_idx 받았을 때 round_idx, round_number, round_purpose, round_time를 반환
+    roundInfo: async (round_idx) => {
+        const fields = `round_number, round_purpose, round_time`;
+        const query = `SELECT ${fields} FROM round WHERE round_idx = ${round_idx}`
+
+        try {
+            const result = await pool.queryParam(query);
+            return result;
+        } catch (err) {
+            console.log('roundInfo ERROR : ', err);
             throw err;
         }
     },
@@ -126,14 +135,14 @@ module.exports = {
     },
 
     //project_idx, round_idx를 받았을 때 round정보, card정보, project_name를 반환
-    roundCardList: async (project_idx, round_idx) => {
+    roundCardList: async (project_idx, round_idx, user_idx) => {
         const query1 = `SELECT round_number, round_purpose, round_time FROM round WHERE round_idx = ${round_idx}`;
-        const query2 = `SELECT card_idx, card_img, card_txt, user_img FROM card JOIN user ON card.user_idx = user.user_idx WHERE round_idx = ${round_idx}`;
+        const query2 = `SELECT card_idx, card_img, card_txt, user.user_idx, user_img FROM card JOIN user ON card.user_idx = user.user_idx WHERE round_idx = ${round_idx}`;
         const query3 = `SELECT project_name FROM project WHERE project_idx = ${project_idx}`;
 
         try {
             const round_result = await pool.queryParam(query1);
-            const card_result = await pool.queryParam(query2)
+            const card_result = await pool.queryParam(query2);
             const project_result = await pool.queryParam(query3);
 
             var data = new Object();
@@ -143,11 +152,29 @@ module.exports = {
             data.round_time = round_result[0]["round_time"];
             var array = [];
             for (var i = 0; i < card_result.length; i++) {
+
                 var data2 = new Object();
+
+                const query4 = `SELECT COUNT(*) FROM scrap WHERE user_idx = ${user_idx} AND card_idx = ${card_result[i]["card_idx"]}`;
+                const query5 = `SELECT memo_content FROM memo WHERE user_idx = ${user_idx} AND card_idx = ${card_result[i]["card_idx"]}`;
+                const scrap_flag = await pool.queryParam(query4);
+                let memo = await pool.queryParam(query5);
+
+                //메모가 없을 경우 메모 테이블에 아예 데이터가 없어서 undefined로 오류남.. 일단 이렇게 잡음
+                try{
+                    memo = memo[0]["memo_content"];
+                }catch(err){
+                    memo = "";
+                }
+
                 data2.card_idx = card_result[i]["card_idx"];
+                data2.scrap_flag = scrap_flag[0]["COUNT(*)"];
                 data2.card_img = card_result[i]["card_img"];
                 data2.card_txt = card_result[i]["card_txt"];
+                data2.user_idx = card_result[i]["user_idx"];
                 data2.user_img = card_result[i]["user_img"];
+                data2.memo_content = memo;
+
                 array.push(data2);
             };
             data.card_list = array;
@@ -194,6 +221,7 @@ module.exports = {
         }
     },
 
+    //중복 참여 방지
     testErrRound: async(user_idx, round_idx) => {
         const query = `SELECT COUNT(*) FROM round_participant rp WHERE rp.user_idx = ${user_idx} AND rp.round_idx = ${round_idx}`;
         try{
