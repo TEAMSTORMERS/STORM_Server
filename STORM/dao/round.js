@@ -159,12 +159,13 @@ module.exports = {
         }
     },
 
-    //project_idx를 받았을 때 round정보, card정보, project_name를 반환
-    roundFinalInfo: async (project_idx) => {
+    //user_idx, project_idx를 받았을 때 해당 유저가 참여한 라운드의 round정보, card정보, project_name를 반환
+    roundFinalInfo: async (user_idx, project_idx) => {
         try {
-            const query1 = `SELECT round_idx, round_number, round_purpose, round_time
-                            FROM round r JOIN project p ON r.project_idx = p.project_idx
-                            WHERE p.project_idx = ${project_idx}`;
+            const query1 = `SELECT round_idx, round_number, round_purpose, round_time FROM round
+                            WHERE project_idx = ${project_idx} AND round_idx
+                                in (SELECT round_idx FROM round_participant AS rp JOIN user ON user.user_idx = rp.user_idx
+                                WHERE rp.user_idx = ${user_idx})`;
 
             const result = await pool.queryParam(query1);
             var array = [];
