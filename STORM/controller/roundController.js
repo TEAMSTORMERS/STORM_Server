@@ -39,15 +39,14 @@ module.exports = {
 
   //라운드 정보 출력
   roundInfo: async (req, res) => {
-    const project_idx = req.params.project_idx;
+    const round_idx = req.params.round_idx;
 
-    if (!project_idx) {
+    if (!round_idx) {
       return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.ROUND_INFO_FAIL));
     }
 
-    const result = await RoundDao.roundInfo(project_idx);
+    const result = await RoundDao.roundInfo(round_idx);
     return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.ROUND_INFO_SUCCESS, {
-      "round_idx": result[0].round_idx,
       "round_number": result[0].round_number,
       "round_purpose": result[0].round_purpose,
       "round_time": result[0].round_time

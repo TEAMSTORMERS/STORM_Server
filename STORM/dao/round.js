@@ -60,24 +60,6 @@ module.exports = {
         }
     },
 
-    //project_idx를 받았을 때 project_idx로 round 수 반환해서 round_idx, round_number, round_purpose, round_time를 반환
-    roundInfo: async (project_idx) => {
-        const query1 = `SELECT COUNT(*) FROM round WHERE project_idx = ${project_idx}`
-
-        try {
-            const round_count = await pool.queryParam(query1);
-            const round_number = round_count[0]["COUNT(*)"];
-
-            const fields = `round_idx, round_number, round_purpose, round_time`;
-            const query2 = `SELECT ${fields} FROM round WHERE project_idx = ${project_idx} AND round_number = ${round_number}`
-            const result = await pool.queryParam(query2);
-            return result;
-        } catch (err) {
-            console.log('roundInfo ERROR : ', err);
-            throw err;
-        }
-    },
-
     //user_idx, round_idx를 받았을 때 round_participant에 새로운 row 추가
     roundEnter: async (user_idx, round_idx) => {
         const fields = `user_idx, round_idx`;
@@ -90,6 +72,20 @@ module.exports = {
             return result;
         } catch (err) {
             console.log('roundEnter ERROR : ', err);
+            throw err;
+        }
+    },
+
+    //round_idx 받았을 때 round_idx, round_number, round_purpose, round_time를 반환
+    roundInfo: async (round_idx) => {
+        const fields = `round_number, round_purpose, round_time`;
+        const query = `SELECT ${fields} FROM round WHERE round_idx = ${round_idx}`
+
+        try {
+            const result = await pool.queryParam(query);
+            return result;
+        } catch (err) {
+            console.log('roundInfo ERROR : ', err);
             throw err;
         }
     },
@@ -206,6 +202,7 @@ module.exports = {
         }
     },
 
+    //중복 참여 방지
     testErrRound: async(user_idx, round_idx) => {
         const query = `SELECT COUNT(*) FROM round_participant rp WHERE rp.user_idx = ${user_idx} AND rp.round_idx = ${round_idx}`;
         try{
