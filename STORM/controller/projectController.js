@@ -5,6 +5,8 @@ const ProjectDao = require('../dao/project');
 
 module.exports = {
 
+    /*  프로젝트 진행    */
+
     //host가 새로운 프로젝트를 생성 - 해당 user 정보를 project_participant 테이블과 project_participant_host 테이블에도 추가
     createProject: async (req, res) => {
         const { project_name, project_comment, user_idx } = req.body;
@@ -85,24 +87,41 @@ module.exports = {
             }));
     },
 
-    //이미 생성된 프로젝트에 멤버가 참여
-    memberEnterProject: async (req, res) => {
-        const { user_idx, project_code } = req.body;
+    //프로젝트 코드를 입력할 경우 해당하는 프로젝트 정보를 반환(팝업)
+    getProjectInfoPopUp: async (req, res) => {
+        const project_code = req.params.project_code;
 
-        //예외처리1 : user_idx나 project_code가 null일 경우
-        if (!user_idx || !project_code) {
+        //값이 제대로 들어오지 않았을 경우
+        if (!project_code) {
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
             return;
         }
 
-        //예외처리2 : project_idx를 제대로 받아왔는지 확인
-        const result = await ProjectDao.checkProjectIdx(project_code);
-        const project_idx = result[0].project_idx;
-        if(project_idx === -1){
+        const result = await ProjectDao.getProjectInfoPopUp(project_code);
+        if(result === -1){
             return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
         }
 
-        // [test] 예외처리: 이미 디비에 참여된 참가자는 거절 ㅋ
+        return res.status(statusCode.OK)
+            .send(util.success(statusCode.OK, resMessage.READ_PROJECT_INFO, {
+                "project_idx" : result[0].project_idx,
+                "project_name": result[0].project_name,
+                "project_comment": result[0].project_comment
+            }
+        ));
+    },
+
+    //프로젝트 정보 팝업에서 확인 버튼을 누를 경우 프로젝트와 동시에 1라운드에 참여
+    memberEnterProject: async (req, res) => {
+        const { user_idx, project_idx } = req.body;
+
+        //예외처리1 : user_idx나 project_code가 null일 경우
+        if (!user_idx || !project_idx) {
+            res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
+            return;
+        }
+
+        // 이미 참여된 참가자는 거절(임시 에러 핸들링)
         const check_overlap_participants = await ProjectDao.testErrProject(user_idx, project_idx);
         if(check_overlap_participants[0]["COUNT(*)"] >= 1){
             return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.TEST_ERROR));
@@ -117,16 +136,27 @@ module.exports = {
             return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
         }
 
-        //예외처리4 : projectParticipantIdx가 제대로 존재하는지 확인
+        //프로젝트 참여자 목록에 해당 유저의 정보를 추가
         const projectParticipantIdx = await ProjectDao.memberEnterProject(project_idx, user_idx);
         if (projectParticipantIdx === -1) {
             return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
         }
 
-        //프로젝트 참여 성공
-        res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.JOIN_PROJECT_SUCCESS, {
-            "project_idx": project_idx
-        }));
+        //project_idx로 1라운드의 round_idx 가져오기
+        const result = await ProjectDao.checkRoundIdx(project_idx);
+        if (result === -1) {
+            return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
+        }
+        const round_idx = result[0]["round_idx"];
+
+        //1라운드 참여자 목록에 해당 유저의 정보를 추가
+        const roundEnter = await ProjectDao.firstRoundEnter(round_idx, user_idx);
+        if (roundEnter === -1) {
+            return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
+        }
+
+        //프로젝트 및 1라운드 참여 성공
+        res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.JOIN_PROJECT_SUCCESS));
     },
 
     
@@ -211,28 +241,42 @@ module.exports = {
             .send(util.success(statusCode.OK, resMessage.DELETE_PROJECT_PARTICIPANT_SUCCESS));
     },
 
-    //프로젝트 코드를 입력할 경우 해당하는 프로젝트 정보를 반환(팝업)
-    getProjectInfoPopUp: async (req, res) => {
-        const project_code = req.params.project_code;
-
-        //값이 제대로 들어오지 않았을 경우
-        if (!project_code) {
+    //프로젝트 시작할 경우 project_status를 1로 변경해서 중간 입장 불가능하도록
+    setProjectStatus: async (req, res) => {
+        const project_idx = req.params.project_idx;
+        if (!project_idx) {
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
             return;
         }
 
-        const result = await ProjectDao.getProjectInfoPopUp(project_code);
+        const result = await ProjectDao.setProjectStatus(project_idx);
         if(result === -1){
             return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
         }
-
+        
         return res.status(statusCode.OK)
-            .send(util.success(statusCode.OK, resMessage.READ_PROJECT_INFO, {
-                "project_name": result[0].project_name,
-                "project_comment": result[0].project_comment
-            }
-        ));
+            .send(util.success(statusCode.OK, resMessage.UPDATE_PROJECT_STATUS_SUCCESS));
     },
+
+    //프로젝트 종료 버튼 클릭 시 DB에서 project_code 삭제
+    finishProject: async (req, res) => {
+        const project_idx = req.body.project_idx;
+        if (!project_idx) {
+            res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
+            return;
+        }
+
+        const result = await ProjectDao.finishProject(project_idx);
+        if(result === -1){
+            return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
+        }
+        
+        return res.status(statusCode.OK)
+            .send(util.success(statusCode.OK, resMessage.DELETE_PROJECT_CODE_SUCCESS));
+    },
+
+
+    /*  최종정리    */
 
     //참여한 프로젝트 이름과 카드 반환
     showAllProject: async (req, res) => {
@@ -273,7 +317,6 @@ module.exports = {
             .send(util.success(statusCode.OK, resMessage.GET_PROJECT_LIST_SUCCESS, array));
     },
 
-
     //최종 프로젝트 정보 반환
     finalInfo: async (req, res) => {
         const project_idx = req.params.project_idx;
@@ -307,40 +350,6 @@ module.exports = {
 
         return res.status(statusCode.OK)
             .send(util.success(statusCode.OK, resMessage.ROUND_FINALINFO_SUCCESS, result));
-    },
-    
-    //프로젝트 시작할 경우 project_status를 1로 변경해서 중간 입장 불가능하도록
-    setProjectStatus: async (req, res) => {
-        const project_idx = req.params.project_idx;
-        if (!project_idx) {
-            res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
-            return;
-        }
-
-        const result = await ProjectDao.setProjectStatus(project_idx);
-        if(result === -1){
-            return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
-        }
-        
-        return res.status(statusCode.OK)
-            .send(util.success(statusCode.OK, resMessage.UPDATE_PROJECT_STATUS_SUCCESS));
-    },
-
-    //프로젝트 종료 버튼 클릭 시 DB에서 project_code 삭제
-    finishProject: async (req, res) => {
-        const project_idx = req.body.project_idx;
-        if (!project_idx) {
-            res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
-            return;
-        }
-
-        const result = await ProjectDao.finishProject(project_idx);
-        if(result === -1){
-            return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
-        }
-        
-        return res.status(statusCode.OK)
-            .send(util.success(statusCode.OK, resMessage.DELETE_PROJECT_CODE_SUCCESS));
     }
 
 }
