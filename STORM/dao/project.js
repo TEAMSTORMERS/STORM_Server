@@ -20,8 +20,26 @@ module.exports = {
         }
     },
 
+    //host가 project에 참여했을 때 project_participant에 새로운 row 추가
+    hostEnterProject: async (project_participant_idx, user_idx) => {
+        const fields = 'project_participant_idx, user_idx';
+        const questions = `?, ?`;
+        const values = [project_participant_idx, user_idx];
+        const query = `INSERT INTO project_participant_host (${fields}) VALUES (${questions})`;
+        try {
+            const result = await pool.queryParamArr(query, values);
+            const insertId = result.insertId;
+            return insertId;
+        } catch (err) {
+            console.log('hostEnterProject ERROR : ', err);
+            return -1;
+            //throw err;
+        }
+    },
+
+    //프로젝트 참여 직전 프로젝트 정보 띄우는 팝업
     getProjectInfoPopUp: async (project_code) => {
-        const query = `SELECT project_name, project_comment FROM project WHERE project_code = "${project_code}"`;
+        const query = `SELECT project_idx, project_name, project_comment FROM project WHERE project_code = "${project_code}"`;
         try{
             const result = await pool.queryParam(query);
             return result;
@@ -32,6 +50,7 @@ module.exports = {
         }
     },
 
+    /*
     //project_code를 받았을 때 project_idx를 반환
     checkProjectIdx: async (project_code) => {
         const query = `SELECT project_idx FROM project WHERE project_code = "${project_code}"`;
@@ -44,7 +63,9 @@ module.exports = {
             //throw err;
         }
     },
+    */
 
+    //이미 존재하는 프로젝트 코드인지 확인
     checkAlreadyProjectCode : async (project_code) => {
         const query = `SELECT count(*) FROM project WHERE project_code = "${project_code}"`;
         try {
@@ -87,18 +108,31 @@ module.exports = {
         }
     },
 
-    //host가 project에 참여했을 때 project_participant에 새로운 row 추가
-    hostEnterProject: async (project_participant_idx, user_idx) => {
-        const fields = 'project_participant_idx, user_idx';
+    //해당 프로젝트의 1라운드의 round_idx 뽑기
+    checkRoundIdx: async (project_idx) => {
+        const query = `SELECT round_idx FROM round WHERE project_idx = "${project_idx}"`;
+        try {
+            const result = await pool.queryParam(query);
+            return result;
+        } catch (err) {
+            console.log('checkRoundIdx ERROR : ', err);
+            return -1;
+            //throw err;
+        }
+    },
+
+    //프로젝트 참여시 자동으로 1라운드 참여자 목록에 추가하기
+    firstRoundEnter: async (round_idx, user_idx) => {
+        const fields = 'round_idx, user_idx';
         const questions = `?, ?`;
-        const values = [project_participant_idx, user_idx];
-        const query = `INSERT INTO project_participant_host (${fields}) VALUES (${questions})`;
+        const values = [round_idx, user_idx];
+        const query = `INSERT INTO round_participant (${fields}) VALUES (${questions})`;
         try {
             const result = await pool.queryParamArr(query, values);
             const insertId = result.insertId;
             return insertId;
         } catch (err) {
-            console.log('hostEnterProject ERROR : ', err);
+            console.log('firstRoundEnter ERROR : ', err);
             return -1;
             //throw err;
         }
