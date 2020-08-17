@@ -47,6 +47,19 @@ module.exports = {
         }
     },
 
+    //(2라운드 이상부터) project_idx로 가장 최근의 round_idx 찾기
+    checkRoundIdx: async (project_idx) => {
+        const query = `SELECT round_idx FROM round WHERE project_idx = ${project_idx}`
+
+        try {
+            const result = await pool.queryParam(query);
+            return result[result.length-1]["round_idx"];
+        } catch (err) {
+            console.log('checkRoundIdx ERROR : ', err);
+            throw err;
+        }
+    },
+
     //project_idx를 받았을 때 project_idx로 round 수 반환해서 round_idx, round_number, round_purpose, round_time를 반환
     roundInfo: async (project_idx) => {
         const query1 = `SELECT COUNT(*) FROM round WHERE project_idx = ${project_idx}`

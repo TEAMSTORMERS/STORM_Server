@@ -55,23 +55,31 @@ module.exports = {
   },
 
   //라운드 참여 - round_participant에 user 정보 추가
-  roundEnter: async (req, res) => {
-    const { user_idx, round_idx } = req.body;
+  nextRoundEnter: async (req, res) => {
+    const { user_idx, project_idx } = req.body;
 
-    if (!user_idx || !round_idx) {
+    if (!user_idx || !project_idx) {
       return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.ROUND_ENTER_FAIL));
     }
 
-    // [test] 예외처리: 이미 디비에 참여된 참가자는 거절 ㅋ
+    //project_idx로 가장 최근의 round_idx 뽑아오기
+    const round_idx = await RoundDao.checkRoundIdx(project_idx);
+    if (round_idx === -1) {
+      return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
+    }
+
+    //이미 참여된 참가자는 거절
     const check_overlap_participant = await RoundDao.testErrRound(user_idx, round_idx);
-    console.log(check_overlap_participant[0]["COUNT(*)"]);
     if(check_overlap_participant[0]["COUNT(*)"] >= 1){
       return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.TEST_ERROR));
     }
 
-    const result = await RoundDao.roundEnter(user_idx, round_idx);
+    //라운드 참여자 목록에 추가
+    await RoundDao.roundEnter(user_idx, round_idx);
 
-    return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.ROUND_ENTER_SUCCESS));
+    return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.ROUND_ENTER_SUCCESS, {
+      "round_idx" : round_idx
+    }));
   },
 
   
