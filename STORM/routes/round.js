@@ -8,7 +8,7 @@ router.get("/info/:round_idx", roundController.roundInfo);
 router.post("/enter", roundController.nextRoundEnter);
 router.delete("/leave/:user_idx/:round_idx", roundController.roundLeave);
 router.get("/memberList/:project_idx/:round_idx", roundController.roundParticipant);
-router.get("/cardList/:project_idx/:round_idx/:user_idx", roundController.roundCardList);
-router.get("/roundFinalInfo/:project_idx", roundController.roundFinalInfo);
+router.get("/cardList/:project_idx/:round_idx", roundController.roundCardList);
+router.get("/roundFinalInfo/:user_idx/:project_idx", roundController.roundFinalInfo);
 
 module.exports = router;
