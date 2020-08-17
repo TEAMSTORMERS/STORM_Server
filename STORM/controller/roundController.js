@@ -4,11 +4,11 @@ const resMessage = require('../modules/responseMessage');
 const RoundDao = require('../dao/round');
 
 module.exports = {
+
   //라운드 카운트 정보 반환(count보다 +1한 수를 반환해야 함)
   roundCount: async (req, res) => {
 
     const project_idx = req.params.project_idx;
-
     if (!project_idx) {
       return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.ROUND_COUNT_FAIL));
     }
@@ -23,14 +23,18 @@ module.exports = {
 
   //라운드 정보 새로 추가
   roundSetting: async (req, res) => {
-    const { project_idx, round_purpose, round_time } = req.body;
 
-    if (!project_idx || !round_purpose || !round_time) {
+    const { user_idx, project_idx, round_purpose, round_time } = req.body;
+    if (!user_idx || !project_idx || !round_purpose || !round_time) {
       return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.ROUND_SETTING_FAIL));
     }
+
     const result = await RoundDao.roundSetting(project_idx, round_purpose, round_time);
 
-    return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.ROUND_SETTING_SUCCESS, result));
+    //라운드 추가시 해당 라운드에 자동으로 참여하도록
+    await RoundDao.roundEnter(user_idx, result);
+
+    return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.ROUND_SETTING_SUCCESS));
   },
 
   //라운드 정보 출력
