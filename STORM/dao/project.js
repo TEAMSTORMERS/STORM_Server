@@ -78,12 +78,28 @@ module.exports = {
         }
     },
 
-    //project_idx를 받았을 때 project_status를 반환
-    checkProjectStatus: async (project_idx) => {
-        const query = `SELECT project_status FROM project WHERE project_idx = "${project_idx}"`;
+    //project_code를 받았을 때 project_status를 반환
+    checkProjectStatus: async (project_code) => {
+        const query = `SELECT project_status FROM project WHERE project_idx in
+                        (SELECT project_idx FROM project WHERE project_code = "${project_code}")`;
         try {
             const result = await pool.queryParamArr(query);
             return result;
+        } catch (err) {
+            console.log('checkProjectStatus ERROR : ', err);
+            return -1;
+            //throw err;
+        }
+    },
+
+    //project_code를 받았을 때 해당 프로젝트의 round 유무를 반환
+    checkRoundSetting: async (project_code) => {
+        const query = `SELECT COUNT(*) FROM round WHERE project_idx in
+                        (SELECT project_idx FROM project WHERE project_code = "${project_code}")`;
+        try {
+            const result = await pool.queryParamArr(query);
+            const roundCount = result[0]["COUNT(*)"];
+            return roundCount;
         } catch (err) {
             console.log('checkProjectStatus ERROR : ', err);
             return -1;

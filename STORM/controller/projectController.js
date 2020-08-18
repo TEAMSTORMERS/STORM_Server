@@ -97,6 +97,25 @@ module.exports = {
             return;
         }
 
+        //project가 진행중일 경우 참여할 수 없음
+        const checkStatus = await ProjectDao.checkProjectStatus(project_code);
+        const project_status = checkStatus[0].project_status;
+        if (project_status === 1) {
+            return res.status(statusCode.CANNOT_JOIN).send(util.fail(statusCode.CANNOT_JOIN, resMessage.CANNOT_JOIN));
+        }else if(project_status === -1){
+            return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
+        }
+
+        //HOST가 아직 1라운드를 세팅하지 않았을 경우 참여할 수 없음
+        const checkRoundSetting = await ProjectDao.checkRoundSetting(project_code);
+        console.log(checkRoundSetting);
+        if (checkRoundSetting === 0) {
+            return res.status(statusCode.CANNOT_JOIN).send(util.fail(statusCode.NOT_PREPARED, resMessage.ROUND_NOT_PREPARED));
+        }else if(checkRoundSetting === -1){
+            return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
+        }
+
+        //프로젝트 참여가 가능할 경우 프로젝트 정보 띄우기
         const result = await ProjectDao.getProjectInfoPopUp(project_code);
         if(result === -1){
             return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
@@ -115,7 +134,7 @@ module.exports = {
     memberEnterProject: async (req, res) => {
         const { user_idx, project_idx } = req.body;
 
-        //예외처리1 : user_idx나 project_code가 null일 경우
+        //예외처리 : user_idx나 project_code가 null일 경우
         if (!user_idx || !project_idx) {
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
             return;
@@ -125,15 +144,6 @@ module.exports = {
         const check_overlap_participants = await ProjectDao.testErrProject(user_idx, project_idx);
         if(check_overlap_participants[0]["COUNT(*)"] >= 1){
             return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.TEST_ERROR));
-        }
-
-        //예외처리3 : project가 진행중일 경우 참여할 수 없음
-        const checkStatus = await ProjectDao.checkProjectStatus(project_idx);
-        const project_status = checkStatus[0].project_status;
-        if (project_status == 1) {
-            return res.status(statusCode.CANNOT_JOIN).send(util.fail(statusCode.CANNOT_JOIN, resMessage.JOIN_PROJECT_FAIL));
-        }else if(project_status === -1){
-            return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
         }
 
         //프로젝트 참여자 목록에 해당 유저의 정보를 추가
