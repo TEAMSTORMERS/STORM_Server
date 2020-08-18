@@ -34,7 +34,7 @@ module.exports = {
     //라운드 추가시 해당 라운드에 자동으로 참여하도록
     await RoundDao.roundEnter(user_idx, result);
 
-    return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.ROUND_SETTING_SUCCESS));
+    return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.ROUND_SETTING_SUCCESS, result));
   },
 
   //라운드 정보 출력
