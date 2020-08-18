@@ -140,10 +140,11 @@ module.exports = {
 
     //해당 프로젝트의 1라운드의 round_idx 뽑기
     checkRoundIdx: async (project_idx) => {
-        const query = `SELECT round_idx FROM round WHERE project_idx = "${project_idx}"`;
+        const query = `SELECT round_idx FROM round WHERE project_idx = ${project_idx}`;
         try {
             const result = await pool.queryParam(query);
-            return result;
+            const round_idx = result[0]["round_idx"];
+            return round_idx;
         } catch (err) {
             console.log('checkRoundIdx ERROR : ', err);
             return -1;
@@ -212,12 +213,15 @@ module.exports = {
     },
 
     //project_participant_idx를 받았을 때 해당하는 project_participant_idx를 삭제
-    deleteProjectparticipant: async (project_participant_idx) => {
-        const query = `DELETE FROM project_participant WHERE project_participant_idx = ${project_participant_idx}`;
+    deleteProjectparticipant: async (project_idx, user_idx) => {
+        const query1 = `SELECT project_participant_idx FROM project_participant WHERE project_idx = ${project_idx} AND user_idx = ${user_idx}`;
 
         try {
-            const result = pool.queryParamArr(query);
-            return result;
+            const result1 = await pool.queryParamArr(query1);
+            const project_participant_idx = result1[0]["project_participant_idx"];
+            const query2 = `DELETE FROM project_participant WHERE project_participant_idx = ${project_participant_idx}`;
+            const result2 = await pool.queryParamArr(query2);
+            return result2;
 
         } catch (err) {
             console.log('deleteProjectparticipant ERROR : ', err);
@@ -227,12 +231,13 @@ module.exports = {
 
     },
 
-    //project_participant_idx를 받았을 때 해당 idx가 project_participant_host 테이블에 있는지 확인
-    checkHost: async (project_participant_idx) => {
-        const query = `SELECT COUNT(*) FROM project_participant_host WHERE project_participant_idx = ${project_participant_idx}`;
+    //user_idx, project_idx로 host여부 찾기
+    checkHost : async (user_idx, project_idx) => {
+        const query = `SELECT COUNT(*) FROM project_participant_host WHERE project_participant_idx in
+                        (SELECT project_participant_idx FROM project_participant WHERE user_idx = ${user_idx} AND project_idx = ${project_idx})`;
 
         try {
-            const result = pool.queryParamArr(query);
+            const result = await pool.queryParam(query);
             const ifHost = result[0]["COUNT(*)"];
             return ifHost;
 
@@ -241,7 +246,6 @@ module.exports = {
             return -1;
             //throw err;
         }
-
     },
 
     //user_idx를 받았을 때 project_idx, project_name을 반환
@@ -343,6 +347,19 @@ module.exports = {
             return data2;
 
         } catch (err) {
+            console.log('finalScarpList ERROR : ', err);
+            return -1;
+            //throw err;
+        }
+    },
+
+    checkProjectStatus: async(project_idx) => {
+        const query = `SELECT project_status FROM project WHERE project_idx = ${project_idx}`;
+        try{
+            const result = await pool.queryParam(query);
+            const project_status = result[0]["project_status"];
+            return project_status;
+        }catch(err){
             console.log('finalScarpList ERROR : ', err);
             return -1;
             //throw err;

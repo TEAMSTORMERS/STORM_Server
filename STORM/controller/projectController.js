@@ -161,11 +161,10 @@ module.exports = {
         }
 
         //project_idx로 1라운드의 round_idx 가져오기
-        const result = await ProjectDao.checkRoundIdx(project_idx);
-        if (result === -1) {
+        const round_idx = await ProjectDao.checkRoundIdx(project_idx);
+        if (round_idx === -1) {
             return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
         }
-        const round_idx = result[0]["round_idx"];
 
         //1라운드 참여자 목록에 해당 유저의 정보를 추가
         const roundEnter = await ProjectDao.firstRoundEnter(round_idx, user_idx);
@@ -218,6 +217,7 @@ module.exports = {
         ));
     },
 
+    /*
     //프로젝트 나가기 - project_participant에서 해당 user 정보 삭제
     deleteProjectparticipant: async (req, res) => {
         const user_idx = req.params.user_idx;
@@ -258,6 +258,7 @@ module.exports = {
         return res.status(statusCode.OK)
             .send(util.success(statusCode.OK, resMessage.DELETE_PROJECT_PARTICIPANT_SUCCESS));
     },
+    */
 
     //프로젝트 시작할 경우 project_status를 1로 변경해서 중간 입장 불가능하도록
     setProjectStatus: async (req, res) => {

@@ -9,61 +9,47 @@ var indexRouter = require('./routes/index');
 var app = express();
 app.io = require('socket.io')();
 
-let status = [];
-
 app.io.on('connection',(socket) => {
 
   console.log(socket.id + "가 들어왔다.");
 
+  //새로운 참여자가 프로젝트에 참여했을 경우
   socket.on('joinRoom', roomCode => {
-
     socket.join(roomCode, () => {
-      
-      if(!status.hasOwnProperty(roomCode)){
-        //호스트가 처음으로 들어오면 status를 false로 초기화
-        status[roomCode] = false;
-        console.log(socket.id);
-      }else{
-        //멤버가 들어올 경우 status는 이미 존재하기 때문에 여기로 들어옴
+      app.io.to(roomCode).emit('roundComplete', '참여자 목록 리로드');
+    });
+  });
+  
+  //호스트가 라운드 시작 버튼을 눌렀을 경우
+  socket.on('roundStartHost', (roomCode) => {
+    app.io.to(roomCode).emit('roundStartMember', '라운드 시작');
+  });
 
-        if(status[roomCode] === true){
-          //호스트가 라운드 설정 완료한 후 멤버가 들어왔을 경우 여기로
-          app.io.to(roomCode).emit('roundComplete');
-        }
+  //호스트가 다음 라운드 진행 버튼을 눌렀을 경우
+  socket.on('prepareNextRound', (roomCode) => {
+    app.io.to(roomCode).emit('waitNextRound', '다음 라운드 설정 중');
+  });
+  
+  //호스트가 다음 라운드 설정을 완료했을 경우
+  socket.on('nextRound', (roomCode) => {
+    app.io.to(roomCode).emit('memberNextRound', '다음 라운드 설정 완료');
+  });
 
-        //만약에 true가 아니면 걍 ... 지나감
-        console.log(socket.id);
-      }
+  //호스트가 프로젝트 종료 버튼을 눌렀을 경우
+  socket.on('finishProject', (roomCode) => {
+    app.io.to(roomCode).emit('memberFinishProject', roomCode);
+  });
+
+  //라운드 시작 전 프로젝트를 나갔을 경우
+  socket.on('leaveRoom', (roomCode) => {
+    socket.leave(roomCode, () => {
+      app.io.to(roomCode).emit('roundComplete');
     });
   });
 
-    socket.on('roundSetting', (roomCode) => {
-      status[roomCode] = true;
-      app.io.to(roomCode).emit('roundComplete');
-    });
-  
-    socket.on('roundStartHost', (roomCode) => {
-      app.io.to(roomCode).emit('roundStartMember', '라운드 시작');
-    });
-    
-    socket.on('nextRound', (roomCode) => {
-      status[roomCode] = false;
-      app.io.to(roomCode).emit('memberNextRound');
-    });
-
-    socket.on('finishProject', (roomCode) => {
-      app.io.to(roomCode).emit('memberFinishProject', roomCode);
-    });
-
-    socket.on('leave', (roomCode) => {
-      socket.leave(roomCode, () => {
-        app.io.to(roomCode).emit('roundComplete');
-      });
-    });
-
-    socket.on('disconnect', () => {
-      console.log(socket.id + '나감.');
-    });
+  socket.on('disconnect', () => {
+    console.log(socket.id + '나감.');
+  });
 
 });
 
