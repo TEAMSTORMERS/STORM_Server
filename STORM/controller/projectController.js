@@ -97,6 +97,14 @@ module.exports = {
             return;
         }
 
+        //존재하지 않는 project_code일 경우
+        const checkProjectCode = await ProjectDao.checkProjectCode(project_code);
+        if (checkProjectCode === 0) {
+            return res.status(statusCode.CANNOT_JOIN).send(util.fail(statusCode.BAD_REQUEST, resMessage.WRONG_CODE));
+        }else if(checkProjectCode === -1){
+            return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
+        }
+
         //project가 진행중일 경우 참여할 수 없음
         const checkStatus = await ProjectDao.checkProjectStatus(project_code);
         const project_status = checkStatus[0].project_status;

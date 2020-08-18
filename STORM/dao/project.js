@@ -78,6 +78,20 @@ module.exports = {
         }
     },
 
+    //project_code를 받았을 때 존재하는 프로젝트 코드인지 반환
+    checkProjectCode: async (project_code) => {
+        const query = `SELECT COUNT(*) FROM project WHERE project_code = "${project_code}"`;
+        try {
+            const result = await pool.queryParamArr(query);
+            const projectCode = result[0]["COUNT(*)"];
+            return projectCode;
+        } catch (err) {
+            console.log('checkProjectStatus ERROR : ', err);
+            return -1;
+            //throw err;
+        }
+    },
+
     //project_code를 받았을 때 project_status를 반환
     checkProjectStatus: async (project_code) => {
         const query = `SELECT project_status FROM project WHERE project_idx in

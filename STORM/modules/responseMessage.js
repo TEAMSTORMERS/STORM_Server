@@ -26,6 +26,7 @@ module.exports = {
     CHANGE_PROFILE_NAME_SUCCESS : "프로필 닉네임 수정 성공",
     
     //프로젝트
+    WRONG_CODE : "유효하지 않은 코드입니다.",
     CREATED_PROJECT_SUCCESS: "프로젝트 생성 성공",
     CREATED_PROJECT_FAIL : "프로젝트 생성 실패",
     CANNOT_JOIN : "이미 프로젝트가 진행중입니다.",
