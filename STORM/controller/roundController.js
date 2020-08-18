@@ -108,6 +108,7 @@ module.exports = {
     }
 
     const result = await RoundDao.roundMemberList(project_idx, round_idx);
+    console.log(result)
     return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.ROUND_MEMBERLIST_SUCCESS, result));
   },
 
