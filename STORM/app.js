@@ -12,34 +12,28 @@ app.io = require('socket.io')();
 
 app.io.on('connection', (socket) => {
   console.log(socket.id + "가 들어왔다.");
-
   //새로운 참여자가 프로젝트에 참여했을 경우
   socket.on('joinRoom', roomCode => {
     socket.join(roomCode, () => {
       app.io.to(roomCode).emit('roundComplete', '참여자 목록 리로드');
     });
   });
-
   //호스트가 라운드 시작 버튼을 눌렀을 경우
   socket.on('roundStartHost', (roomCode) => {
     app.io.to(roomCode).emit('roundStartMember', '라운드 시작');
   });
-
   //호스트가 다음 라운드 진행 버튼을 눌렀을 경우
   socket.on('prepareNextRound', (roomCode) => {
     app.io.to(roomCode).emit('waitNextRound', '다음 라운드 설정 중');
   });
-
   //호스트가 다음 라운드 설정을 완료했을 경우
   socket.on('nextRound', (roomCode) => {
     app.io.to(roomCode).emit('memberNextRound', '다음 라운드 설정 완료');
   });
-
   //호스트가 프로젝트 종료 버튼을 눌렀을 경우
   socket.on('finishProject', (roomCode) => {
     app.io.to(roomCode).emit('memberFinishProject', roomCode);
   });
-
   //라운드 시작 전 프로젝트를 나갔을 경우
   socket.on('leaveRoom', (roomCode) => {
     socket.leave(roomCode, () => {
