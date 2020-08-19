@@ -37,13 +37,10 @@ module.exports = {
     const { user_email, user_password } = req.body;
 
     if(!user_email || !user_password){
-      console.log(user_email);
-      console.log(req.body);
       return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
     }
 
     const salt = await UserDao.checkUserByEmail(user_email);
-    console.log(salt);
 
     if(!salt){
       console.log(user);
@@ -51,7 +48,6 @@ module.exports = {
     }
 
     const hashed = await encrypt.encryptWithSalt(user_password, salt);
-    console.log(hashed);
     
     const user = await UserDao.signIn(user_email, salt, hashed);
 
@@ -66,8 +62,9 @@ module.exports = {
   withDrawal: async(req, res) => {
     const { user_idx, user_password, reason} = req.body;
 
-    if(!user_password || !reason){
-      console.log(user_password, reason);
+    console.log("비밀번호 : ", user_password, "사유 :", reason);
+
+    if(!user_password || !user_idx){
       return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
     }
 
@@ -89,8 +86,9 @@ module.exports = {
   checkPassword: async(req, res) => {
     const { user_idx, user_password} = req.body;
 
-    if(!user_password || !user_password){
-      console.log(user_password, user_password);
+    console.log("user_idx : ", user_idx, "pw : ", user_password);
+
+    if(!user_idx || !user_password){
       return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
     }
 
