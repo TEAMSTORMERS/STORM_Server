@@ -63,7 +63,7 @@ module.exports = {
         }
 
         //scrap 삭제하기
-        var result = await CardDao.deletescrap(scrap_idx[0]["scrap_idx"]);
+        var result = await CardDao.deletescrap(scrap_idx);
 
         //성공
         return res.status(statusCode.OK)

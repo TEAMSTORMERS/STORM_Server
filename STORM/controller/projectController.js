@@ -100,7 +100,7 @@ module.exports = {
         //존재하지 않는 project_code일 경우
         const checkProjectCode = await ProjectDao.checkProjectCode(project_code);
         if (checkProjectCode === 0) {
-            return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.WRONG_CODE));
+            return res.status(statusCode.CANNOT_JOIN).send(util.fail(statusCode.BAD_REQUEST, resMessage.WRONG_CODE));
         }else if(checkProjectCode === -1){
             return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
         }
@@ -116,7 +116,7 @@ module.exports = {
         //HOST가 아직 1라운드를 세팅하지 않았을 경우 참여할 수 없음
         const checkRoundSetting = await ProjectDao.checkRoundSetting(project_code);
         if (checkRoundSetting === 0) {
-            return res.status(statusCode.NOT_PREPARED).send(util.fail(statusCode.NOT_PREPARED, resMessage.ROUND_NOT_PREPARED));
+            return res.status(statusCode.CANNOT_JOIN).send(util.fail(statusCode.NOT_PREPARED, resMessage.ROUND_NOT_PREPARED));
         }else if(checkRoundSetting === -1){
             return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
         }

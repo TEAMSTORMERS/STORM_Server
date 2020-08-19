@@ -115,7 +115,7 @@ module.exports = {
         console.log("프로젝트를 종료합니다. 코드 삭제.");
 
         //현재 1라운드 시작 전인지 확인(project_status가 1인지 확인)
-        const checkProjectStatus = await ProjectDao.checkProjectStatus(project_idx);
+        const checkProjectStatus = await ProjectDao.checkProjectStatusByIdx(project_idx);
         if(checkProjectStatus === -1){
             return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
 
