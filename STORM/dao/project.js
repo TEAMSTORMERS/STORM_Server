@@ -353,8 +353,8 @@ module.exports = {
         }
     },
 
-    checkProjectStatus: async(project_idx) => {
-        const query = `SELECT project_status FROM project WHERE project_idx = ${project_idx}`;
+    checkProjectStatus: async(project_code) => {
+        const query = `SELECT project_status FROM project WHERE project_code = "${project_code}"`;
         try{
             const result = await pool.queryParam(query);
             const project_status = result[0]["project_status"];

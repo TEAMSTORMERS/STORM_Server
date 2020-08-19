@@ -104,7 +104,7 @@ module.exports = {
         res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.UPDATED_MEMO));
     },
 
-    //카드 정보(카드 상세보기에 있는 정보 모두) 출력 - 클라와 이야기 필요(승환오빠가 이야기했던 부분)
+    //사용안함
     showCard: async (req, res) => {
         const user_idx = req.params.user_idx;
         const card_idx = req.params.card_idx;
