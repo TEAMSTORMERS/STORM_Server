@@ -12,6 +12,7 @@ module.exports = {
     LOGIN_FAIL: "로그인 실패",
     NO_USER: "존재하지 않는 회원입니다.",
     MISS_MATCH_PW: "비밀번호가 맞지 않습니다.",
+    MATCH_PASSWORD: "비밀번호가 일치합니다.",
 
     // 인증
     EMPTY_TOKEN: '토큰 값이 없습니다.',

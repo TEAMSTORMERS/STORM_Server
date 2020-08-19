@@ -86,6 +86,29 @@ module.exports = {
     return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.DELETE_USER));
   },
 
+  checkPassword: async(req, res) => {
+    const { user_idx, user_password} = req.body;
+
+    if(!user_password || !user_password){
+      console.log(user_password, user_password);
+      return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
+    }
+
+    const salt = await UserDao.checkUserByIdx(user_idx);
+
+    if(!salt){
+      return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
+    }
+
+    const hashed = await encrypt.encryptWithSalt(user_password, salt);
+
+    if(!await UserDao.checkPassword(user_idx, salt, hashed)){
+      return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.MISS_MATCH_PW));
+    };
+
+    return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.MATCH_PASSWORD));
+  },
+
   getMypage : async (req, res) => {
 
     //1. request body에서 값을 읽어온다.

@@ -95,6 +95,27 @@ module.exports = {
         }
     },
 
+    checkPassword: async(user_idx, salt, user_password) => {
+        const query = `SELECT user_idx FROM user  WHERE user_idx = ${user_idx} AND salt = "${salt}" AND user_password = "${user_password}"`;
+
+        try {
+            const result = await pool.queryParam(query);
+            console.log(result);
+            if(result[0]){
+                return true;
+            }else{
+                return false;
+            }
+        } catch (err) {
+            if (err.errno == 1062) {
+                console.log('checkPassword ERROR : ', err.errno, err.code);
+                return -1;
+            }
+            console.log('checkPassword ERROR : ', err);
+            return false;
+        }
+    },
+
     checkUserIdx : async (user_idx) => {
         const query = `SELECT COUNT(*) FROM user WHERE user_idx = ${user_idx}`;
         try{
