@@ -24,17 +24,13 @@ module.exports = {
     },
 
     signIn: async(user_email, salt, user_password) => {
-        const query = `SELECT user_idx FROM user  WHERE user_email = "${user_email}" AND salt = "${salt}" AND user_password = "${user_password}"`;
+        const query = `SELECT user_idx FROM user WHERE user_email = "${user_email}" AND salt = "${salt}" AND user_password = "${user_password}"`;
 
         try {
             const result = await pool.queryParam(query);
             const insertId = result[0]["user_idx"];
             return insertId;
         } catch (err) {
-            if (err.errno == 1062) {
-                console.log('signIn ERROR : ', err.errno, err.code);
-                return -1;
-            }
             console.log('signIn ERROR : ', err);
             return false;
         }
@@ -45,17 +41,13 @@ module.exports = {
 
         try {
             const result = await pool.queryParam(query);
-            console.log(result);
             return result[0]["salt"];
         } catch (err) {
-            if (err.errno == 1062) {
-                console.log('checkUserByEmail ERROR : ', err.errno, err.code);
-                return -1;
-            }
             console.log('checkUserByEmail ERROR : ', err);
             return false;
         }
     },
+
     checkDuplicateEmail: async(user_email) => {
         const query = `SELECT COUNT(*) FROM user WHERE user_email = "${user_email}"`;
 
@@ -64,13 +56,8 @@ module.exports = {
             if(result[0]["COUNT(*)"] >= 1){
                 return false;
             }
-
             return result[0]["salt"];
         } catch (err) {
-            if (err.errno == 1062) {
-                console.log('checkDuplicateEmail ERROR : ', err.errno, err.code);
-                return -1;
-            }
             console.log('checkDuplicateEmail ERROR : ', err);
             return false;
         }
@@ -83,13 +70,9 @@ module.exports = {
             const result = await pool.queryParam(query);
             return result[0]["salt"];
         }catch(err){
-            if (err.errno == 1062) {
-                console.log('checkUserByIdx ERROR : ', err.errno, err.code);
-                return -1;
-            }
+            console.log('checkUserByIdx ERROR : ', err.errno, err.code);
             return false;
         }
-        
     },
   
     withDrawal: async(user_idx, salt, user_password, reason) => {
@@ -105,10 +88,6 @@ module.exports = {
                 return false;
             }
         } catch (err) {
-            if (err.errno == 1062) {
-                console.log('withDrawal ERROR : ', err.errno, err.code);
-                return -1;
-            }
             console.log('withDrawal ERROR : ', err);
             return false;
         }
@@ -126,10 +105,6 @@ module.exports = {
                 return false;
             }
         } catch (err) {
-            if (err.errno == 1062) {
-                console.log('checkPassword ERROR : ', err.errno, err.code);
-                return -1;
-            }
             console.log('checkPassword ERROR : ', err);
             return false;
         }
@@ -155,7 +130,8 @@ module.exports = {
             return result;
         }catch (err){
             console.log('getMypage ERROR : ', err);
-            throw err;
+            //throw err;
+            return -1;
         }
     },
 

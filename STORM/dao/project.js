@@ -366,6 +366,19 @@ module.exports = {
         }
     },
 
+    checkProjectStatusByIdx: async(project_idx) => {
+        const query = `SELECT project_status FROM project WHERE project_idx = ${project_idx}`;
+        try{
+            const result = await pool.queryParam(query);
+            const project_status = result[0]["project_status"];
+            return project_status;
+        }catch(err){
+            console.log('finalScarpList ERROR : ', err);
+            return -1;
+            //throw err;
+        }
+    },
+
     setProjectStatus: async(project_idx) => {
         const query = `UPDATE project SET project_status = 1 WHERE project_idx = ${project_idx}`;
         try{

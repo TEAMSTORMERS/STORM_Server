@@ -28,7 +28,6 @@ module.exports = {
       return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
     }
 
-
     //3. 가입성공
     return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.CREATED_USER, idx));
   },
@@ -43,8 +42,7 @@ module.exports = {
     const salt = await UserDao.checkUserByEmail(user_email);
 
     if(!salt){
-      console.log(user);
-      return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.MISS_MATCH_PW));
+      return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.NO_USER));
     }
 
     const hashed = await encrypt.encryptWithSalt(user_password, salt);
@@ -52,7 +50,6 @@ module.exports = {
     const user = await UserDao.signIn(user_email, salt, hashed);
 
     if(!user){
-      console.log(user);
       return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.MISS_MATCH_PW));
     }
 
@@ -61,8 +58,6 @@ module.exports = {
 
   withDrawal: async(req, res) => {
     const { user_idx, user_password, reason} = req.body;
-
-    console.log("비밀번호 : ", user_password, "사유 :", reason);
 
     if(!user_password || !user_idx){
       return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
@@ -85,8 +80,6 @@ module.exports = {
 
   checkPassword: async(req, res) => {
     const { user_idx, user_password} = req.body;
-
-    console.log("user_idx : ", user_idx, "pw : ", user_password);
 
     if(!user_idx || !user_password){
       return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));

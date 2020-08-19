@@ -39,10 +39,12 @@ module.exports = {
 
         try{
             const result = await pool.queryParam(query);
-            return result;
+            const scrapIdx = result[0]["scrap_idx"];
+            return scrapIdx;
         }catch(err){
             console.log('checkScrapIdx ERROR : ', err);
-             throw err;
+            return -1; 
+            //throw err;
         }
         
     },
@@ -51,7 +53,7 @@ module.exports = {
         const query = `DELETE FROM scrap WHERE scrap_idx = ${scrap_idx}`;
 
         try{
-            const result = await pool.queryParamArr(query);
+            const result = await pool.queryParam(query);
             return result;
         }catch(err){
              console.log('deletescrap ERROR : ', err);
