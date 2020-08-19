@@ -17,7 +17,7 @@ module.exports = {
       return;
     }
 
-    if(await UserDao.checkUserByEmail(user_email)){
+    if(await UserDao.checkDuplicateEmail(user_email)){
       return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.ALREADY_ID)); 
     }
 

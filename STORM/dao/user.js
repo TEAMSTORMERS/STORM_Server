@@ -56,6 +56,25 @@ module.exports = {
             return false;
         }
     },
+    checkDuplicateEmail: async(user_email) => {
+        const query = `SELECT COUNT(*) FROM user WHERE user_email = "${user_email}"`;
+
+        try {
+            const result = await pool.queryParam(query);
+            if(result[0]["COUNT(*)"] >= 1){
+                return false;
+            }
+
+            return result[0]["salt"];
+        } catch (err) {
+            if (err.errno == 1062) {
+                console.log('checkDuplicateEmail ERROR : ', err.errno, err.code);
+                return -1;
+            }
+            console.log('checkDuplicateEmail ERROR : ', err);
+            return false;
+        }
+    },
 
     checkUserByIdx: async(user_idx) => {
         const query = `SELECT salt FROM user WHERE user_idx = ${user_idx}`;
