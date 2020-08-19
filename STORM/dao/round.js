@@ -78,8 +78,7 @@ module.exports = {
 
     //round_idx 받았을 때 round_idx, round_number, round_purpose, round_time를 반환
     roundInfo: async (round_idx) => {
-        const fields = `round_number, round_purpose, round_time`;
-        const query = `SELECT ${fields} FROM round WHERE round_idx = ${round_idx}`
+        const query = `SELECT round_number, round_purpose, round_time FROM round WHERE round_idx = ${round_idx}`
 
         try {
             const result = await pool.queryParam(query);
@@ -188,7 +187,7 @@ module.exports = {
            
             const array = [];
             for(var i=0; i<round_user.length; i++){
-                const query3 = `SELECT user_name, user_img FROM user WHERE user_idx = ${round_user[i]["user_idx"]}`;
+                const query3 = `SELECT user_idx, user_name, user_img FROM user WHERE user_idx = ${round_user[i]["user_idx"]}`;
                 const result1 = await pool.queryParam(query3);
                 
                 const query4 = `SELECT COUNT(project_participant_host_idx) AS user_host_flag
@@ -197,6 +196,7 @@ module.exports = {
                 const result2 = await pool.queryParam(query4);
                 
                 var data = new Object();
+                data.user_idx = result1[0].user_idx;
                 data.user_name = result1[0].user_name;
                 data.user_img = result1[0].user_img;
                 data.user_host_flag = result2[0].user_host_flag;

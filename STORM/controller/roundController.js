@@ -47,6 +47,7 @@ module.exports = {
     }
 
     const result = await RoundDao.roundInfo(round_idx);
+    console.log(result);
     return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.ROUND_INFO_SUCCESS, {
       "round_number": result[0].round_number,
       "round_purpose": result[0].round_purpose,
