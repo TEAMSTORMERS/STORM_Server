@@ -73,14 +73,14 @@ module.exports = {
     const check_overlap_participant = await RoundDao.testErrRound(user_idx, round_idx);
     if(check_overlap_participant[0]["COUNT(*)"] >= 1){
       return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.TEST_ERROR));
+    }else if(check_overlap_participant === -1){
+      return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
     }
 
     //라운드 참여자 목록에 추가
     await RoundDao.roundEnter(user_idx, round_idx);
 
-    return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.ROUND_ENTER_SUCCESS, {
-      "round_idx" : round_idx
-    }));
+    return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.ROUND_ENTER_SUCCESS, round_idx));
   },
 
   
@@ -119,7 +119,6 @@ module.exports = {
         const checkProjectStatus = await ProjectDao.checkProjectStatusByIdx(project_idx);
         if(checkProjectStatus === -1){
             return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
-
         }else if(checkProjectStatus === 0){
           //1라운드 시작 전이므로 프로젝트 참여자 목록에서도 삭제
           const fin = await ProjectDao.deleteProjectparticipant(project_idx, user_idx);
@@ -130,7 +129,6 @@ module.exports = {
         }
 
       }else if(checkMemberNum === -1){
-        //DB 에러
         return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
       
       }else if(checkMemberNum > 1){
@@ -152,7 +150,7 @@ module.exports = {
         console.log("호스트 삭제합니다.");
 
         //현재 1라운드 시작 전인지 확인(project_status가 1인지 확인)
-        const checkProjectStatus = await ProjectDao.checkProjectStatus(project_idx);
+        const checkProjectStatus = await ProjectDao.checkProjectStatusByIdx(project_idx);
         if(checkProjectStatus === -1){
             return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
         }else if(checkProjectStatus === 0){
@@ -170,7 +168,7 @@ module.exports = {
       console.log("멤버입니다.");
       
       //현재 1라운드 시작 전인지 확인
-      const checkProjectStatus = await ProjectDao.checkProjectStatus(project_idx);
+      const checkProjectStatus = await ProjectDao.checkProjectStatusByIdx(project_idx);
         if(checkProjectStatus === -1){
             return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
         }else if(checkProjectStatus === 0){
@@ -182,7 +180,7 @@ module.exports = {
           console.log("1라운드 시작 전입니다. 프로젝트 참여자 목록에서도 나갑니다.");
         }
 
-    }else if(ifHost === -1){  //DB에러
+    }else if(ifHost === -1){
         return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
     }
 
@@ -207,7 +205,6 @@ module.exports = {
     }
 
     const result = await RoundDao.roundMemberList(project_idx, round_idx);
-    console.log(result)
     return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.ROUND_MEMBERLIST_SUCCESS, result));
   },
 

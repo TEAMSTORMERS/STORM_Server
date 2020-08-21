@@ -9,7 +9,7 @@ router.post('/enter', projectController.memberEnterProject);
 router.post('/', projectController.createProject); 
 router.get('/:project_idx', projectController.getProjectInfo);
 router.put('/status/:project_idx', projectController.setProjectStatus);
-router.put('/finish', projectController.finishProject);
+router.put('/finish/:project_idx', projectController.finishProject);
 router.get('/finalInfo/:project_idx', projectController.finalInfo);
 router.get('/finalScarpList/:user_idx/:project_idx', projectController.finalScrapList);
 

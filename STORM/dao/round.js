@@ -9,15 +9,12 @@ module.exports = {
         const query = `SELECT COUNT(*) FROM round WHERE project_idx = ${project_idx}`
 
         try {
-            const result = await pool.queryParamArr(query, values);
+            const result = await pool.queryParam(query);
             return result[0]["COUNT(*)"] + 1;
         } catch (err) {
-            if (err.errno == 1062) {
-                console.log('signup ERROR : ', err.errno, err.code);
-                return -1;
-            }
-            console.log('signup ERROR : ', err);
-            throw err;
+            console.log('countInfo ERROR : ', err);
+            return -1;
+            //throw err;
         }
     },
 
@@ -38,12 +35,9 @@ module.exports = {
             const insertId = result.insertId;
             return insertId;
         } catch (err) {
-            if (err.errno == 1062) {
-                console.log('signup ERROR : ', err.errno, err.code);
-                return -1;
-            }
-            console.log('signup ERROR : ', err);
-            throw err;
+            console.log('roundSetting ERROR : ', err);
+            return -1;
+            //throw err;
         }
     },
 
@@ -56,7 +50,8 @@ module.exports = {
             return result[result.length-1]["round_idx"];
         } catch (err) {
             console.log('checkRoundIdx ERROR : ', err);
-            throw err;
+            return -1;
+            //throw err;
         }
     },
 
@@ -85,7 +80,8 @@ module.exports = {
             return result;
         } catch (err) {
             console.log('roundInfo ERROR : ', err);
-            throw err;
+            return -1;
+            //throw err;
         }
     },
 
@@ -99,7 +95,7 @@ module.exports = {
             return memberNum;
 
         } catch (err) {
-            console.log('checkHost ERROR : ', err);
+            console.log('checkMemberNum ERROR : ', err);
             return -1;
             //throw err;
         }
@@ -127,7 +123,7 @@ module.exports = {
             const result3 = await pool.queryParamArr(query3, values);
             return result3;
         } catch (err) {
-            console.log('checkHost ERROR : ', err);
+            console.log('changeHost ERROR : ', err);
             return -1;
             //throw err;
         }
@@ -135,16 +131,15 @@ module.exports = {
 
     //해당 유저의 정보를 호스트 테이블에서 삭제
     deleteHost: async (user_idx, project_idx) => {
-        const query1 = `SELECT project_participant_idx FROM project_participant WHERE user_idx = ${user_idx} AND project_idx = ${project_idx}`;
+        const query = `DELETE FROM project_participant_host WHERE project_participant_idx
+                        in (SELECT project_participant_idx FROM project_participant WHERE user_idx = ${user_idx} AND project_idx = ${project_idx})`;
         try {
-            const result1 = await pool.queryParam(query1);
-            const project_participant_idx = result1[0]["project_participant_idx"];
-            const query2 = `DELETE FROM project_participant_host WHERE project_participant_idx = ${project_participant_idx}`;
-            const result2 = await pool.queryParam(query2);
-            return result2;
+            const result = await pool.queryParam(query);
+            return result;
         } catch (err) {
-            console.log('roundLeave ERROR : ', err);
-            throw err;
+            console.log('deleteHost ERROR : ', err);
+            return -1;
+            //throw err;
         }
     },
 
@@ -158,7 +153,7 @@ module.exports = {
             return num;
 
         } catch (err) {
-            console.log('checkHost ERROR : ', err);
+            console.log('checkMemberNum ERROR : ', err);
             return -1;
             //throw err;
         }
@@ -172,7 +167,8 @@ module.exports = {
             return result;
         } catch (err) {
             console.log('roundLeave ERROR : ', err);
-            throw err;
+            return -1;
+            //throw err;
         }
     },
 
@@ -205,7 +201,8 @@ module.exports = {
             return array;
         }catch(err){
             console.log('roundMemberList ERROR : ', err);
-            console.log(err);
+            return -1;
+            //throw err;
         }
     },
 
@@ -257,7 +254,8 @@ module.exports = {
 
         } catch (err) {
             console.log('roundCardList ERROR : ', err);
-            console.log(err);
+            return -1;
+            //throw err;
         }
     },
 
@@ -292,7 +290,8 @@ module.exports = {
 
         } catch (err) {
             console.log('roundFinalInfo ERROR : ', err);
-            console.log(err);
+            return -1;
+            //throw err;
         }
     },
 
@@ -304,7 +303,8 @@ module.exports = {
             return result
         }catch(err){
             console.log('testErrRound ERROR : ', err);
-            console.log(err);
+            return -1;
+            //throw err;
         }
     }
 }
