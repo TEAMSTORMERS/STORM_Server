@@ -73,14 +73,14 @@ module.exports = {
     const check_overlap_participant = await RoundDao.testErrRound(user_idx, round_idx);
     if(check_overlap_participant[0]["COUNT(*)"] >= 1){
       return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.TEST_ERROR));
+    }else if(check_overlap_participant === -1){
+      return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
     }
 
     //라운드 참여자 목록에 추가
     await RoundDao.roundEnter(user_idx, round_idx);
 
-    return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.ROUND_ENTER_SUCCESS, {
-      "round_idx" : round_idx
-    }));
+    return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.ROUND_ENTER_SUCCESS, round_idx));
   },
 
   
