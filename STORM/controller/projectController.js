@@ -277,7 +277,8 @@ module.exports = {
 
     //프로젝트 종료 버튼 클릭 시 DB에서 project_code 삭제
     finishProject: async (req, res) => {
-        const project_idx = req.body.project_idx;
+        const project_idx = req.params.project_idx;
+        
         if (!project_idx) {
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
             return;

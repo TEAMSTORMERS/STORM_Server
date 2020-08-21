@@ -30,6 +30,10 @@ app.io.on('connection', (socket) => {
   socket.on('nextRound', (roomCode) => {
     app.io.to(roomCode).emit('memberNextRound', '다음 라운드 설정 완료');
   });
+  //멤버가 다음 라운드에 입장할 경우
+  socket.on('enternextRound', (roomCode) => {
+    app.io.to(roomCode).emit('roundComplete', '참여자 목록 리로드');
+  });
   //호스트가 프로젝트 종료 버튼을 눌렀을 경우
   socket.on('finishProject', (roomCode) => {
     app.io.to(roomCode).emit('memberFinishProject', roomCode);
