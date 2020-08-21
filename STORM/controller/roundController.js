@@ -47,6 +47,7 @@ module.exports = {
     }
 
     const result = await RoundDao.roundInfo(round_idx);
+    console.log(result);
     return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.ROUND_INFO_SUCCESS, {
       "round_number": result[0].round_number,
       "round_purpose": result[0].round_purpose,
@@ -70,17 +71,16 @@ module.exports = {
 
     //이미 참여된 참가자는 거절
     const check_overlap_participant = await RoundDao.testErrRound(user_idx, round_idx);
-    console.log(check_overlap_participant);
-    if(check_overlap_participant >= 1){
+    if(check_overlap_participant[0]["COUNT(*)"] >= 1){
       return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.TEST_ERROR));
-    }else if(check_overlap_participant === -1){
-      return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
     }
 
     //라운드 참여자 목록에 추가
     await RoundDao.roundEnter(user_idx, round_idx);
 
-    return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.ROUND_ENTER_SUCCESS, round_idx));
+    return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.ROUND_ENTER_SUCCESS, {
+      "round_idx" : round_idx
+    }));
   },
 
   
@@ -152,7 +152,7 @@ module.exports = {
         console.log("호스트 삭제합니다.");
 
         //현재 1라운드 시작 전인지 확인(project_status가 1인지 확인)
-        const checkProjectStatus = await ProjectDao.checkProjectStatusByIdx(project_idx);
+        const checkProjectStatus = await ProjectDao.checkProjectStatus(project_idx);
         if(checkProjectStatus === -1){
             return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
         }else if(checkProjectStatus === 0){
@@ -170,7 +170,7 @@ module.exports = {
       console.log("멤버입니다.");
       
       //현재 1라운드 시작 전인지 확인
-      const checkProjectStatus = await ProjectDao.checkProjectStatusByIdx(project_idx);
+      const checkProjectStatus = await ProjectDao.checkProjectStatus(project_idx);
         if(checkProjectStatus === -1){
             return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
         }else if(checkProjectStatus === 0){
@@ -207,7 +207,7 @@ module.exports = {
     }
 
     const result = await RoundDao.roundMemberList(project_idx, round_idx);
-
+    console.log(result)
     return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.ROUND_MEMBERLIST_SUCCESS, result));
   },
 

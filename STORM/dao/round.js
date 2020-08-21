@@ -5,15 +5,19 @@ module.exports = {
 
     //project_idx를 받았을 때 round 수 +1 반환
     countInfo: async (project_idx) => {
+        const values = project_idx;
         const query = `SELECT COUNT(*) FROM round WHERE project_idx = ${project_idx}`
 
         try {
-            const result = await pool.queryParam(query);
+            const result = await pool.queryParamArr(query, values);
             return result[0]["COUNT(*)"] + 1;
         } catch (err) {
+            if (err.errno == 1062) {
+                console.log('signup ERROR : ', err.errno, err.code);
+                return -1;
+            }
             console.log('signup ERROR : ', err);
-            return -1;
-            //throw err;
+            throw err;
         }
     },
 
@@ -34,9 +38,12 @@ module.exports = {
             const insertId = result.insertId;
             return insertId;
         } catch (err) {
+            if (err.errno == 1062) {
+                console.log('signup ERROR : ', err.errno, err.code);
+                return -1;
+            }
             console.log('signup ERROR : ', err);
-            return -1;
-            //throw err;
+            throw err;
         }
     },
 
@@ -49,8 +56,7 @@ module.exports = {
             return result[result.length-1]["round_idx"];
         } catch (err) {
             console.log('checkRoundIdx ERROR : ', err);
-            return -1;
-            //throw err;
+            throw err;
         }
     },
 
@@ -66,8 +72,7 @@ module.exports = {
             return result;
         } catch (err) {
             console.log('roundEnter ERROR : ', err);
-            return -1;
-            //throw err;
+            throw err;
         }
     },
 
@@ -80,8 +85,7 @@ module.exports = {
             return result;
         } catch (err) {
             console.log('roundInfo ERROR : ', err);
-            return -1;
-            //throw err;
+            throw err;
         }
     },
 
@@ -131,15 +135,16 @@ module.exports = {
 
     //해당 유저의 정보를 호스트 테이블에서 삭제
     deleteHost: async (user_idx, project_idx) => {
-        const query = `DELETE FROM project_participant_host WHERE project_participant_idx
-                        in (SELECT project_participant_idx FROM project_participant WHERE user_idx = ${user_idx} AND project_idx = ${project_idx})`;
+        const query1 = `SELECT project_participant_idx FROM project_participant WHERE user_idx = ${user_idx} AND project_idx = ${project_idx}`;
         try {
-            const result = await pool.queryParam(query);
-            return result;
+            const result1 = await pool.queryParam(query1);
+            const project_participant_idx = result1[0]["project_participant_idx"];
+            const query2 = `DELETE FROM project_participant_host WHERE project_participant_idx = ${project_participant_idx}`;
+            const result2 = await pool.queryParam(query2);
+            return result2;
         } catch (err) {
             console.log('roundLeave ERROR : ', err);
-            return -1;
-            //throw err;
+            throw err;
         }
     },
 
@@ -167,8 +172,7 @@ module.exports = {
             return result;
         } catch (err) {
             console.log('roundLeave ERROR : ', err);
-            return -1;
-            //throw err;
+            throw err;
         }
     },
 
@@ -201,8 +205,7 @@ module.exports = {
             return array;
         }catch(err){
             console.log('roundMemberList ERROR : ', err);
-            return -1;
-            //console.log(err);
+            console.log(err);
         }
     },
 
@@ -254,8 +257,7 @@ module.exports = {
 
         } catch (err) {
             console.log('roundCardList ERROR : ', err);
-            return -1;
-            //console.log(err);
+            console.log(err);
         }
     },
 
@@ -290,7 +292,7 @@ module.exports = {
 
         } catch (err) {
             console.log('roundFinalInfo ERROR : ', err);
-            return -1;
+            console.log(err);
         }
     },
 
@@ -299,11 +301,10 @@ module.exports = {
         const query = `SELECT COUNT(*) FROM round_participant rp WHERE rp.user_idx = ${user_idx} AND rp.round_idx = ${round_idx}`;
         try{
             const result = await pool.queryParam(query);
-            const count = result[0]["COUNT(*)"];
-            return count;
+            return result
         }catch(err){
             console.log('testErrRound ERROR : ', err);
-            return -1;
+            console.log(err);
         }
     }
 }
