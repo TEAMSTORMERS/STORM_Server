@@ -11,11 +11,13 @@ app.io = require('socket.io')();
 
 
 app.io.on('connection', (socket) => {
-  console.log(socket.id + "가 들어왔다.");
+  console.log(socket.id + " connection.");
   //새로운 참여자가 프로젝트에 참여했을 경우
   socket.on('joinRoom', roomCode => {
     socket.join(roomCode, () => {
+      console.log('★-----------------'+socket.id + "가 " + roomCode + "에 joinRoom했습니다-----------------★");
       app.io.to(roomCode).emit('roundComplete', '참여자 목록 리로드');
+      console.log('★-----------------'+socket.id + "가 roundComplete 날림-----------------★");
     });
   });
   //호스트가 라운드 시작 버튼을 눌렀을 경우
@@ -30,6 +32,11 @@ app.io.on('connection', (socket) => {
   socket.on('nextRound', (roomCode) => {
     app.io.to(roomCode).emit('memberNextRound', '다음 라운드 설정 완료');
   });
+  //멤버들이 다음 단계로 넘어간다는 버튼을 눌렀을 경우
+  socket.on('enterNextRound', (roomCode) => {
+    app.io.to(roomCode).emit('roundComplete', '참여자 목록 리로드');
+    console.log(socket.id + "가 roundComplete 날림.");
+  });
   //호스트가 프로젝트 종료 버튼을 눌렀을 경우
   socket.on('finishProject', (roomCode) => {
     app.io.to(roomCode).emit('memberFinishProject', roomCode);
@@ -41,7 +48,7 @@ app.io.on('connection', (socket) => {
     });
   });
   socket.on('disconnect', () => {
-    console.log(socket.id + '나감.');
+    console.log('★-----------------' + socket.id + '가 disconnected 됨-----------------★');
   });
 });
 

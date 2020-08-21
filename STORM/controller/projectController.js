@@ -155,18 +155,21 @@ module.exports = {
         //프로젝트 참여자 목록에 해당 유저의 정보를 추가
         const projectParticipantIdx = await ProjectDao.memberEnterProject(project_idx, user_idx);
         if (projectParticipantIdx === -1) {
+            console.log(1);
             return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
         }
 
         //project_idx로 1라운드의 round_idx 가져오기
         const round_idx = await ProjectDao.checkRoundIdx(project_idx);
         if (round_idx === -1) {
+            console.log(2);
             return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
         }
 
         //1라운드 참여자 목록에 해당 유저의 정보를 추가
         const roundEnter = await ProjectDao.firstRoundEnter(round_idx, user_idx);
         if (roundEnter === -1) {
+            console.log(3);
             return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
         }
 
@@ -196,6 +199,7 @@ module.exports = {
     //프로젝트 정보 반환
     getProjectInfo: async (req, res) => {
         const project_idx = req.params.project_idx;
+        console.log(project_idx + " 프로젝트 인덱스 잘 받고 있나유?");
 
         if(!project_idx){
             return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
@@ -277,7 +281,8 @@ module.exports = {
 
     //프로젝트 종료 버튼 클릭 시 DB에서 project_code 삭제
     finishProject: async (req, res) => {
-        const project_idx = req.body.project_idx;
+        const project_idx = req.params.project_idx;
+
         if (!project_idx) {
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
             return;
