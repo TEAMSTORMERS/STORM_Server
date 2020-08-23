@@ -99,21 +99,18 @@ module.exports = {
     const ifHost = await ProjectDao.checkHost(user_idx, project_idx);
     if(ifHost === 1) {
       //호스트일 경우
-      console.log("호스트입니다.");
 
       //현재 라운드에 다른 멤버들이 존재하는지 확인
       const checkMemberNum = await RoundDao.checkMemberNum(round_idx);
       
       if(checkMemberNum === 1){
         //호스트 혼자 있을 경우
-        console.log("호스트만 프로젝트에 존재합니다.");
         
         //프로젝트 종료
         const finishProject = await ProjectDao.finishProject(project_idx);
         if(finishProject === -1){
             return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
         }
-        console.log("프로젝트를 종료합니다. 코드 삭제.");
 
         //현재 1라운드 시작 전인지 확인(project_status가 1인지 확인)
         const checkProjectStatus = await ProjectDao.checkProjectStatusByIdx(project_idx);
@@ -125,7 +122,6 @@ module.exports = {
           if(fin === -1){
             return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
           }
-          console.log("1라운드 시작 전입니다. 프로젝트 참여자 목록에서도 나갑니다.");
         }
 
       }else if(checkMemberNum === -1){
@@ -133,21 +129,18 @@ module.exports = {
       
       }else if(checkMemberNum > 1){
         //멤버가 존재할 경우 - 호스트 넘겨줘야 함
-        console.log("호스트 제외 다른 멤버가 존재합니다.");
 
         //1.호스트 다음으로 들어온 사람의 user_idx를 찾아서 -> project_participant_host 테이블에 넣기
         const changeHost = await RoundDao.changeHost(round_idx, project_idx);
         if(changeHost === -1){
           return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
         }
-        console.log("호스트 변경했습니다.");
 
         //2.이 유저의 호스트 정보를 DB에서 삭제하기
         const deleteHost = await RoundDao.deleteHost(user_idx, project_idx);
         if(deleteHost === -1){
           return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
         }
-        console.log("호스트 삭제합니다.");
 
         //현재 1라운드 시작 전인지 확인(project_status가 1인지 확인)
         const checkProjectStatus = await ProjectDao.checkProjectStatusByIdx(project_idx);
@@ -159,13 +152,11 @@ module.exports = {
           if(fin === -1){
             return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
           }
-          console.log("1라운드 시작 전입니다. 프로젝트 참여자 목록에서도 나갑니다.");
         }
       }
 
     }else if(ifHost === 0){
       //호스트가 아닐 경우
-      console.log("멤버입니다.");
       
       //현재 1라운드 시작 전인지 확인
       const checkProjectStatus = await ProjectDao.checkProjectStatusByIdx(project_idx);
@@ -177,7 +168,6 @@ module.exports = {
           if(fin === -1){
             return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
           }
-          console.log("1라운드 시작 전입니다. 프로젝트 참여자 목록에서도 나갑니다.");
         }
 
     }else if(ifHost === -1){
@@ -189,7 +179,6 @@ module.exports = {
     if(result === -1){
       return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
     }
-    console.log("이 라운드에서 나갑니다.");
 
     return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.ROUND_LEAVE_SUCCESS));
   },
@@ -205,6 +194,7 @@ module.exports = {
     }
 
     const result = await RoundDao.roundMemberList(project_idx, round_idx);
+    
     return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.ROUND_MEMBERLIST_SUCCESS, result));
   },
 
@@ -217,7 +207,9 @@ module.exports = {
     if (!project_idx || !round_idx || !user_idx) {
       return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.GET_ROUND_CARD_LIST_FAIL));
     }
+
     const result = await RoundDao.roundCardList(project_idx, round_idx, user_idx);
+
     return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.GET_ROUND_CARD_LIST_SUCCESS, result));
   },
 
