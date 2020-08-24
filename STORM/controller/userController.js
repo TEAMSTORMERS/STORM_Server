@@ -6,6 +6,20 @@ const encrypt  = require('../modules/crypto');
 
 module.exports = {
 
+  checkEmail: async(req, res) => {
+    const { user_email } = req.body;
+
+    if(!user_email){
+      return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
+    }
+
+    if(await UserDao.checkDuplicateEmail(user_email)){
+      return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.ALREADY_ID)); 
+    }
+
+    return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.AVAILABLE_EMAIL));
+  },
+
   signup: async (req, res) => {
     //1. request body에서 값을 읽어온다.
     const { user_name, user_email, user_password, user_img_flag } = req.body;
@@ -56,28 +70,6 @@ module.exports = {
     return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.LOGIN_SUCCESS, user));
   },
 
-  withDrawal: async(req, res) => {
-    const { user_idx, user_password, reason} = req.body;
-
-    if(!user_password || !user_idx){
-      return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
-    }
-
-    const salt = await UserDao.checkUserByIdx(user_idx);
-
-    if(!salt){
-      return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
-    }
-
-    const hashed = await encrypt.encryptWithSalt(user_password, salt);
-
-    if(!await UserDao.withDrawal(user_idx, salt, hashed, reason)){
-      return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.MISS_MATCH_PW));
-    };
-
-    return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.DELETE_USER));
-  },
-
   checkPassword: async(req, res) => {
     const { user_idx, user_password} = req.body;
 
@@ -98,6 +90,30 @@ module.exports = {
     };
 
     return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.MATCH_PASSWORD));
+  },
+
+  withDrawal: async(req, res) => {
+    const { user_idx, user_password, reason} = req.body;
+
+
+    if(!user_password || !user_idx){
+      return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
+    }
+
+    const salt = await UserDao.checkUserByIdx(user_idx);
+
+    if(!salt){
+      return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
+    }
+
+    const hashed = await encrypt.encryptWithSalt(user_password, salt);
+    
+
+    if(!await UserDao.withDrawal(user_idx, salt, hashed, reason)){
+      return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.MISS_MATCH_PW));
+    };
+
+    return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.DELETE_USER));
   },
 
   getMypage : async (req, res) => {

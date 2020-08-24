@@ -53,10 +53,7 @@ module.exports = {
 
         try {
             const result = await pool.queryParam(query);
-            if(result[0]["COUNT(*)"] >= 1){
-                return false;
-            }
-            return result[0]["salt"];
+            return result[0]["COUNT(*)"];
         } catch (err) {
             console.log('checkDuplicateEmail ERROR : ', err);
             return false;
@@ -98,7 +95,6 @@ module.exports = {
 
         try {
             const result = await pool.queryParam(query);
-            console.log(result);
             if(result[0]){
                 return true;
             }else{

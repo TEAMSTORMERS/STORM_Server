@@ -47,7 +47,7 @@ module.exports = {
     }
 
     const result = await RoundDao.roundInfo(round_idx);
-    console.log(result);
+    
     return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.ROUND_INFO_SUCCESS, {
       "round_number": result[0].round_number,
       "round_purpose": result[0].round_purpose,
@@ -180,6 +180,7 @@ module.exports = {
       return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
     }
 
+
     return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.ROUND_LEAVE_SUCCESS));
   },
   
@@ -194,6 +195,7 @@ module.exports = {
     }
 
     const result = await RoundDao.roundMemberList(project_idx, round_idx);
+
     
     return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.ROUND_MEMBERLIST_SUCCESS, result));
   },
@@ -207,9 +209,7 @@ module.exports = {
     if (!project_idx || !round_idx || !user_idx) {
       return res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.GET_ROUND_CARD_LIST_FAIL));
     }
-
     const result = await RoundDao.roundCardList(project_idx, round_idx, user_idx);
-
     return res.status(statusCode.OK).send(util.success(statusCode.OK, resMessage.GET_ROUND_CARD_LIST_SUCCESS, result));
   },
 
