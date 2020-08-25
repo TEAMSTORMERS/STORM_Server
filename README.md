@@ -1,116 +1,56 @@
-# ⚡️🌪STORM SERVER🌪⚡️
+### :zap:유저
+|기능|URL| HTTP Method|
+|----|---|------------|
+|[이메일 중복 확인](https://github.com/TEAMSTORMERS/STORM_Server/blob/addWiki/STORM_Wiki/1.%20%EC%9C%A0%EC%A0%80%20%EA%B4%80%EB%A0%A8%20%EB%B7%B0/%5BPOST%5D%20%EC%9D%B4%EB%A9%94%EC%9D%BC%20%EC%A4%91%EB%B3%B5%20%ED%99%95%EC%9D%B8.md)|/user/checkemail|POST|
+|[회원가입](https://github.com/TEAMSTORMERS/STORM_Server/blob/addWiki/STORM_Wiki/1.%20%EC%9C%A0%EC%A0%80%20%EA%B4%80%EB%A0%A8%20%EB%B7%B0/%5BPOST%5D%20%ED%9A%8C%EC%9B%90%EA%B0%80%EC%9E%85.md)|/user/signup|POST|
+|[로그인](https://github.com/TEAMSTORMERS/STORM_Server/blob/addWiki/STORM_Wiki/1.%20%EC%9C%A0%EC%A0%80%20%EA%B4%80%EB%A0%A8%20%EB%B7%B0/%5BPOST%5D%20%EB%A1%9C%EA%B7%B8%EC%9D%B8.md)|/user/signin|POST|
+|[마이페이지 조회](https://github.com/TEAMSTORMERS/STORM_Server/blob/addWiki/STORM_Wiki/1.%20%EC%9C%A0%EC%A0%80%20%EA%B4%80%EB%A0%A8%20%EB%B7%B0/%5BGET%5D%20%EB%A7%88%EC%9D%B4%ED%8E%98%EC%9D%B4%EC%A7%80%20%EC%A1%B0%ED%9A%8C.md)|/user/mypage/:user_idx|GET|
+|[프로필 이미지 수정](https://github.com/TEAMSTORMERS/STORM_Server/blob/addWiki/STORM_Wiki/1.%20%EC%9C%A0%EC%A0%80%20%EA%B4%80%EB%A0%A8%20%EB%B7%B0/%5BGET%5D%20%ED%94%84%EB%A1%9C%ED%95%84%20%EC%9D%B4%EB%AF%B8%EC%A7%80%20%EC%88%98%EC%A0%95.md)|/user/mypage/img|PUT|
+|[프로필 닉네임 수정](https://github.com/TEAMSTORMERS/STORM_Server/blob/addWiki/STORM_Wiki/1.%20%EC%9C%A0%EC%A0%80%20%EA%B4%80%EB%A0%A8%20%EB%B7%B0/%5BGET%5D%20%ED%94%84%EB%A1%9C%ED%95%84%20%EB%8B%89%EB%84%A4%EC%9E%84%20%EC%88%98%EC%A0%95.md)|/user/mypage/name|PUT|
+|[비밀번호 확인](https://github.com/TEAMSTORMERS/STORM_Server/blob/addWiki/STORM_Wiki/1.%20%EC%9C%A0%EC%A0%80%20%EA%B4%80%EB%A0%A8%20%EB%B7%B0/%5BPOST%5D%20%EB%B9%84%EB%B0%80%EB%B2%88%ED%98%B8%20%ED%99%95%EC%9D%B8.md)|/user/checkPassword|POST|
+|[회원탈퇴](https://github.com/TEAMSTORMERS/STORM_Server/blob/addWiki/STORM_Wiki/1.%20%EC%9C%A0%EC%A0%80%20%EA%B4%80%EB%A0%A8%20%EB%B7%B0/%5BPOST%5D%20%ED%9A%8C%EC%9B%90%ED%83%88%ED%87%B4.md)|/user/withdrawal|POST|
 
-<img src = "https://user-images.githubusercontent.com/55133871/87793056-b0277880-c87f-11ea-9f5a-62bcb3054a31.gif" width = "100%">
+## </br>
 
-<img src = "https://user-images.githubusercontent.com/55133871/87793832-c41faa00-c880-11ea-96c9-4b85d248149e.png" width = "20%">
+### :zap:Main 뷰
+|기능|URL| HTTP Method|
+|----|---|------------|
+|[참여한 프로젝트 조회](https://github.com/TEAMSTORMERS/STORM_Server/blob/addWiki/STORM_Wiki/2.%20%EB%A9%94%EC%9D%B8%20%EB%B7%B0/%5BGET%5D%20%EC%B0%B8%EC%97%AC%ED%95%9C%20%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8%20%EC%A1%B0%ED%9A%8C.md)|/project/user/:user_idx|GET|
+|[프로젝트 팝업 - MEMBER](https://github.com/TEAMSTORMERS/STORM_Server/blob/addWiki/STORM_Wiki/2.%20%EB%A9%94%EC%9D%B8%20%EB%B7%B0/%5BGET%5D%20%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8%20%ED%8C%9D%EC%97%85.md)|/project/info/:project_code|GET|
+|[프로젝트 참여 - MEMBER](https://github.com/TEAMSTORMERS/STORM_Server/blob/addWiki/STORM_Wiki/2.%20%EB%A9%94%EC%9D%B8%20%EB%B7%B0/%5BPOST%5D%20%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8%20%EC%B0%B8%EC%97%AC.md)|/project/enter|POST|
 
-![npm_bedge](https://img.shields.io/badge/STORM-STORMERS-EC6565)
-![node_badge](https://img.shields.io/badge/node-%3E%3D%2012.0.0-F5CA6E)
-![npm_bedge](https://img.shields.io/badge/npm-v6.12.0-866DC9)
+## </br>
 
-<br>
+### :zap:프로젝트 진행
+|기능|URL| HTTP Method|
+|----|---|------------|
+|[프로젝트 추가 - HOST](https://github.com/TEAMSTORMERS/STORM_Server/blob/addWiki/STORM_Wiki/3.%20%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8%20%EC%A7%84%ED%96%89%20%EB%B7%B0/%5BPOST%5D%20%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8%20%EC%B6%94%EA%B0%80.md)|/project|POST|
+|[프로젝트 정보 조회](https://github.com/TEAMSTORMERS/STORM_Server/blob/addWiki/STORM_Wiki/3.%20%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8%20%EC%A7%84%ED%96%89%20%EB%B7%B0/%5BGET%5D%20%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8%20%EC%A0%95%EB%B3%B4%20%EC%A1%B0%ED%9A%8C.md)|/project/:project_idx|GET|
+|[프로젝트 상태 변경 - HOST](https://github.com/TEAMSTORMERS/STORM_Server/blob/addWiki/STORM_Wiki/3.%20%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8%20%EC%A7%84%ED%96%89%20%EB%B7%B0/%5BPUT%5D%20%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8%20%EC%83%81%ED%83%9C%20%EB%B3%80%EA%B2%BD.md)|/project/status/:project_idx|PUT|
+|[라운드 카운트 조회 - HOST](https://github.com/TEAMSTORMERS/STORM_Server/blob/addWiki/STORM_Wiki/3.%20%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8%20%EC%A7%84%ED%96%89%20%EB%B7%B0/%5BGET%5D%20%EB%9D%BC%EC%9A%B4%EB%93%9C%20%EC%B9%B4%EC%9A%B4%ED%8A%B8%20%EC%A1%B0%ED%9A%8C.md)|/round/count/:project_idx|GET|
+|[라운드 설정 - HOST](https://github.com/TEAMSTORMERS/STORM_Server/blob/addWiki/STORM_Wiki/3.%20%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8%20%EC%A7%84%ED%96%89%20%EB%B7%B0/%5BPOST%5D%20%EB%9D%BC%EC%9A%B4%EB%93%9C%20%EC%84%A4%EC%A0%95.md)|/round/setting|POST|
+|[라운드 정보 조회](https://github.com/TEAMSTORMERS/STORM_Server/blob/addWiki/STORM_Wiki/3.%20%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8%20%EC%A7%84%ED%96%89%20%EB%B7%B0/%5BGET%5D%20%EB%9D%BC%EC%9A%B4%EB%93%9C%20%EC%A0%95%EB%B3%B4%20%EC%A1%B0%ED%9A%8C.md)|/round/info/:round_idx|GET|
+|[라운드 참여 - MEMBER](https://github.com/TEAMSTORMERS/STORM_Server/blob/addWiki/STORM_Wiki/3.%20%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8%20%EC%A7%84%ED%96%89%20%EB%B7%B0/%5BPOST%5D%20%EB%9D%BC%EC%9A%B4%EB%93%9C%20%EC%B0%B8%EC%97%AC.md)|/round/enter|POST|
+|[라운드 나가기](https://github.com/TEAMSTORMERS/STORM_Server/blob/addWiki/STORM_Wiki/3.%20%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8%20%EC%A7%84%ED%96%89%20%EB%B7%B0/%5BDELETE%5D%20%EB%9D%BC%EC%9A%B4%EB%93%9C%20%EB%82%98%EA%B0%80%EA%B8%B0.md)|/round/leave/:user_idx/:project_idx/:round_idx	|DELETE|
+|[라운드 참여자 목록 조회](https://github.com/TEAMSTORMERS/STORM_Server/blob/addWiki/STORM_Wiki/3.%20%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8%20%EC%A7%84%ED%96%89%20%EB%B7%B0/%5BGET%5D%20%EB%9D%BC%EC%9A%B4%EB%93%9C%20%EC%B0%B8%EC%97%AC%EC%9E%90%20%EB%AA%A9%EB%A1%9D%20%EC%A1%B0%ED%9A%8C.md)|/round/memberList/:project_idx/:round_idx|GET|
+|[카드 추가](https://github.com/TEAMSTORMERS/STORM_Server/blob/addWiki/STORM_Wiki/3.%20%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8%20%EC%A7%84%ED%96%89%20%EB%B7%B0/%5BPOST%5D%20%EC%B9%B4%EB%93%9C%20%EC%B6%94%EA%B0%80.md)|/card|POST|
+|[라운드 카드 리스트 조회](https://github.com/TEAMSTORMERS/STORM_Server/blob/addWiki/STORM_Wiki/3.%20%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8%20%EC%A7%84%ED%96%89%20%EB%B7%B0/%5BGET%5D%20%EB%9D%BC%EC%9A%B4%EB%93%9C%20%EC%B9%B4%EB%93%9C%20%EB%A6%AC%EC%8A%A4%ED%8A%B8%20%EC%A1%B0%ED%9A%8C.md)|/round/cardList/:project_idx/:round_idx/:user_idx|GET|
+|[카드 스크랩](https://github.com/TEAMSTORMERS/STORM_Server/blob/addWiki/STORM_Wiki/3.%20%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8%20%EC%A7%84%ED%96%89%20%EB%B7%B0/%5BPOST%5D%20%EC%B9%B4%EB%93%9C%20%EC%8A%A4%ED%81%AC%EB%9E%A9.md)|/card/scrap|POST|
+|[카드 스크랩 취소](https://github.com/TEAMSTORMERS/STORM_Server/blob/addWiki/STORM_Wiki/3.%20%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8%20%EC%A7%84%ED%96%89%20%EB%B7%B0/%5BDELETE%5D%20%EC%B9%B4%EB%93%9C%20%EC%8A%A4%ED%81%AC%EB%9E%A9%20%EC%B7%A8%EC%86%8C.md)|/card/scrap/:user_idx/:card_idx|DELETE|
+|[카드 메모 추가](https://github.com/TEAMSTORMERS/STORM_Server/blob/addWiki/STORM_Wiki/3.%20%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8%20%EC%A7%84%ED%96%89%20%EB%B7%B0/%5BPOST%5D%20%EC%B9%B4%EB%93%9C%20%EB%A9%94%EB%AA%A8%20%EC%B6%94%EA%B0%80.md)|/card/memo|POST|
+|[카드 메모 수정](https://github.com/TEAMSTORMERS/STORM_Server/blob/addWiki/STORM_Wiki/3.%20%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8%20%EC%A7%84%ED%96%89%20%EB%B7%B0/%5BPUT%5D%20%EC%B9%B4%EB%93%9C%20%EB%A9%94%EB%AA%A8%20%EC%88%98%EC%A0%95.md)|/card/memo|PUT|
+|[프로젝트 종료 - HOST](https://github.com/TEAMSTORMERS/STORM_Server/blob/addWiki/STORM_Wiki/3.%20%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8%20%EC%A7%84%ED%96%89%20%EB%B7%B0/%5BPUT%5D%20%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8%20%EC%A2%85%EB%A3%8C.md)|/project/finish|PUT|
 
-<b>실시간 브레인스토밍 협업 플랫폼 - STORM</b>
-> STORM은 효율적인 아이디어 회의를 돕는 온라인 툴이자 브레인스토밍을 함께하는 서비스입니다.
-<br> 라운드마다 목표와 제한 시간을 설정해 각자 아이디어를 고민해보고,
-<br> 각 라운드 후에는 팀원들이 함께 의견을 나눌 수 있습니다.
-<br> 프로젝트가 끝난 뒤에는 최종 정리를 통해 라운드 및 카드 목록을 한눈에 볼 수 있으며,
-<br> 좋은 아이디어 카드들은 따로 스크랩해 모아볼 수 있습니다.
-<br><br>RELEASE 1.0 개발 기간 : ~2020-08-20 <br>
-[📄API 명세서](https://github.com/TEAMSTORMERS/STORM_Server/wiki)<br>
+## </br>
 
-<br>
+### :zap:최종 정리 뷰
+|기능|URL| HTTP Method|
+|----|---|------------|
+|[최종 프로젝트 정보 조회](https://github.com/TEAMSTORMERS/STORM_Server/blob/addWiki/STORM_Wiki/4.%20%EC%B5%9C%EC%A2%85%20%EC%A0%95%EB%A6%AC%20%EB%B7%B0/%5BGET%5D%20%EC%B5%9C%EC%A2%85%20%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8%20%EC%A0%95%EB%B3%B4%20%EC%A1%B0%ED%9A%8C.md)|/project/finalInfo/:project_idx|GET|
+|[스크랩한 카드 조회](https://github.com/TEAMSTORMERS/STORM_Server/blob/addWiki/STORM_Wiki/4.%20%EC%B5%9C%EC%A2%85%20%EC%A0%95%EB%A6%AC%20%EB%B7%B0/%5BGET%5D%20%EB%9D%BC%EC%9A%B4%EB%93%9C%EB%B3%84%20%EC%A0%95%EB%B3%B4%20%EC%A1%B0%ED%9A%8C.md)|/project/finalScarpList/:user_idx/:project_idx|GET|
+|[라운드 별 정보 조회](https://github.com/TEAMSTORMERS/STORM_Server/blob/addWiki/STORM_Wiki/4.%20%EC%B5%9C%EC%A2%85%20%EC%A0%95%EB%A6%AC%20%EB%B7%B0/%5BGET%5D%20%EB%9D%BC%EC%9A%B4%EB%93%9C%EB%B3%84%20%EC%A0%95%EB%B3%B4%20%EC%A1%B0%ED%9A%8C.md)|/roundFinalInfo/:user_idx/:project_idx|GET|
 
-## ⚡️About STORM
-![브랜딩](https://user-images.githubusercontent.com/55133871/87826675-42e20a80-c8b4-11ea-9532-7826df649ea0.png)
+## </br>
 
-<br>
-
-## ⚡️Work Flow
-
-![flow2](https://user-images.githubusercontent.com/55133871/87826346-b1729880-c8b3-11ea-9411-f22c37e86829.png)
-
-<br>
-
-## ⚡️Main Function
-#### 1. 프로젝트 진행하기
-> 사용자는 새로운 프로젝트를 만들거나, 참여코드를 입력하여 기존 프로젝트에 참여할 수 있습니다.
-각 라운드에서는 미리 설정한 목표 시간 안에 원하는 만큼 브레인스토밍 카드를 생성할 수 있습니다.
-라운드 종료 후에는 해당 라운드에 생성된 모든 카드를 확인할 수 있으며, 스크랩 및 메모 작성이 가능합니다.
-라운드 종료 후 호스트는 자유롭게 라운드를 추가하여 프로젝트를 계속 진행할 수 있습니다.
-
-#### 2. 실시간으로 참여자 목록 갱신하기
-> 소켓을 활용하여 새로운 참여자가 프로젝트에 들어오거나, 기존 참여자가 프로젝트에서 나갔을 때 참여자 목록을 실시간으로 갱신하여 업데이트합니다.
-
-#### 3. 참여한 프로젝트 및 스크랩한 카드 모아보기
-> 사용자는 본인이 참여했던 프로젝트와 스크랩했던 카드를 메인화면에서 모두 모아볼 수 있습니다.
-
-<br>
-<br>
-
-## ⚡️Functional Specification
-[📄기능명세서](https://docs.google.com/spreadsheets/d/1a4JL1O6FLVjjnCx7rg4781ici10yg-ZGDMqT5empflk/edit#gid=686412120)
-
-<br>
-<br>
-
-## ⚡️ER Diagram
-![erd](https://user-images.githubusercontent.com/55133871/87429972-81ab6280-c61f-11ea-9679-d6ed564b2dbd.png)
-
-<br>
-<br>
-
-## ⚡️Server Architecture
-![architecture](https://user-images.githubusercontent.com/55133871/87429967-807a3580-c61f-11ea-8a58-8c821fe5fb17.png)
-
-<br>
-
-## ⚡️Dependencies Module
-```
-"dependencies": {
-    "aws-sdk": "^2.735.0",
-    "cookie-parser": "~1.4.4",
-    "debug": "~2.6.9",
-    "express": "~4.16.1",
-    "http-errors": "~1.6.3",
-    "jade": "~1.11.0",
-    "jsonwebtoken": "^8.5.1",
-    "morgan": "~1.9.1",
-    "multer": "^1.4.2",
-    "multer-s3": "^2.9.0",
-    "nodemon": "^2.0.4",
-    "pbkdf2": "^3.1.1",
-    "promise-mysql": "^4.1.3",
-    "rand-token": "^1.0.1",
-    "socket.io": "^2.3.0"
-}
-```
-
-<br>
-<br>
-
-## ⚡️Code Convention
-* git branch
-  * git flow를 적용합니다. 각 기능별로 feat/{기능 이름}을 생성해 작업한 후 dev에 merge합니다.
-
-* git comment message rule
-  * [feat] 기능 추가 <br>
-  * [refactor] 기능 수정 <br>
-  * [fix] 버그 수정
-
-* git merge rule
-  * pull request를 날릴 경우 자신이 작업한 내용을 자세하게 comment로 남깁니다. 이후 상대방이 해당 내용을 확인하고 merge를 승인합니다. 이 때, 코드 리뷰가 필요할 경우 comment를 남길 수 있습니다.
-
-<br>
-<br>
-
-## ⚡️Developers
-* [장세영](https://github.com/Say-young) <br>
-* [조충범](https://github.com/cndqjacndqja)<br>
-
-<br>
-<br>
-
-## ⚡️Client
-* [Android](https://github.com/TEAMSTORMERS/STORM_Android) <br>
-* [iOS](https://github.com/TEAMSTORMERS/STORM_iOS)
+### :zap:소켓
+* [소켓 사용설명서](https://github.com/TEAMSTORMERS/STORM_Server/blob/addWiki/STORM_Wiki/5.%20%EC%86%8C%EC%BC%93/SOCKET.md)
