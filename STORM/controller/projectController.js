@@ -310,7 +310,7 @@ module.exports = {
         }
 
         var array = [];
-        for (i = 0; i < result_enterProject.length; i++) {
+        for (i = result_enterProject.length-1 ; i >= 0 ; i--) {
             var data1 = new Object();
             data1.project_idx = result_enterProject[i]["project_idx"];
             data1.project_name = result_enterProject[i]["project_name"];
