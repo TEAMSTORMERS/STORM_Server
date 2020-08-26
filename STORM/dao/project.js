@@ -308,63 +308,63 @@ module.exports = {
         }
     },
 
-    //user_idx, project_idx를 받았을 때 project_name, round_number, round_purpose, round_time, card_idx, card_img, card_txt를 반환
-    finalScarpList: async (user_idx, project_idx) => {
-        const query1 = `SELECT project_name, COUNT(scrap_idx) AS scrap_count
-                        FROM project JOIN card ON project.project_idx = card.project_idx JOIN scrap ON scrap.card_idx = card.card_idx
-                        WHERE project.project_idx = ${project_idx} AND scrap.user_idx = ${user_idx};`;
-        
-        const query2 = `SELECT card.card_idx, card.card_img, card.card_txt
-                        FROM project JOIN card ON project.project_idx = card.project_idx JOIN scrap ON scrap.card_idx = card.card_idx
-                        WHERE project.project_idx = ${project_idx} AND scrap.user_idx = ${user_idx};`
-        
-        try {
-            const query1_result = await pool.queryParam(query1);
-            const query2_result = await pool.queryParam(query2);
+//user_idx, project_idx를 받았을 때 project_name, round_number, round_purpose, round_time, card_idx, card_img, card_txt를 반환
+finalScarpList: async (user_idx, project_idx) => {
+    const query1 = `SELECT project_name, COUNT(scrap_idx) AS scrap_count
+                    FROM project JOIN card ON project.project_idx = card.project_idx JOIN scrap ON scrap.card_idx = card.card_idx
+                    WHERE project.project_idx = ${project_idx} AND scrap.user_idx = ${user_idx};`;
+    
+    const query2 = `SELECT card.card_idx, card.card_img, card.card_txt, card.user_idx AS card_user_idx
+                    FROM project JOIN card ON project.project_idx = card.project_idx JOIN scrap ON scrap.card_idx = card.card_idx
+                    WHERE project.project_idx = ${project_idx} AND scrap.user_idx = ${user_idx};`
+    
+    try {
+        const query1_result = await pool.queryParam(query1);
+        const query2_result = await pool.queryParam(query2);
 
-            const array = [];
+        const array = [];
+        
+        for (var i = 0; i < query1_result[0]["scrap_count"]; i++) {
+
+            const query3 = `SELECT round_number, round_purpose, round_time FROM round
+                            WHERE round_idx in(SELECT round_idx from card WHERE card_idx = ${query2_result[i]["card_idx"]})`;
+            const query3_result = await pool.queryParam(query3);
+
+            const query4 = `SELECT memo_content FROM card JOIN memo ON card.card_idx = memo.card_idx
+                            WHERE memo.user_idx = ${user_idx} AND card.card_idx = ${query2_result[i]["card_idx"]};`
+            const query4_result = await pool.queryParam(query4);
+
+            const data = new Object();
+            data.round_number = query3_result[0]["round_number"];
+            data.round_purpose = query3_result[0]["round_purpose"];
+            data.round_time = query3_result[0]["round_time"];
+            data.user_idx = query2_result[i]["card_user_idx"];
+            data.card_idx = query2_result[i]["card_idx"];
+            data.card_img = query2_result[i]["card_img"];
+            data.card_txt = query2_result[i]["card_txt"];
             
-            for (var i = 0; i < query1_result[0]["scrap_count"]; i++) {
-
-                const query3 = `SELECT round_number, round_purpose, round_time FROM round
-                                WHERE round_idx in(SELECT round_idx from card WHERE card_idx = ${query2_result[i]["card_idx"]})`;
-                const query3_result = await pool.queryParam(query3);
-
-                const query4 = `SELECT card.user_idx, memo_content FROM card JOIN memo ON card.card_idx = memo.card_idx
-                                WHERE memo.user_idx = ${user_idx} AND card.card_idx = ${query2_result[i]["card_idx"]};`
-                const query4_result = await pool.queryParam(query4);
-
-                const data = new Object();
-                data.round_number = query3_result[0]["round_number"];
-                data.round_purpose = query3_result[0]["round_purpose"];
-                data.round_time = query3_result[0]["round_time"];
-                data.user_idx = query3_result[0]["user_idx"];
-                data.card_idx = query2_result[i]["card_idx"];
-                data.card_img = query2_result[i]["card_img"];
-                data.card_txt = query2_result[i]["card_txt"];
-                
-                //메모가 없을 경우 메모 테이블에 아예 데이터가 없어서 undefined로 오류남.. 일단 이렇게 잡음
-                try{
-                    data.memo_content = query4_result[0]["memo_content"];
-                }catch(err){
-                    data.memo_content = "";
-                }
-                
-                array.push(data);
+            //메모가 없을 경우 메모 테이블에 아예 데이터가 없어서 undefined로 오류남.. 일단 이렇게 잡음
+            try{
+                data.memo_content = query4_result[0]["memo_content"];
+            }catch(err){
+                data.memo_content = "";
             }
-            
-            const data2 = new Object();
-            data2.project_name = query1_result[0]["project_name"];
-            data2.scrap_count = query1_result[0]["scrap_count"];
-            data2.card_item = array;
-            return data2;
 
-        } catch (err) {
-            console.log('finalScarpList ERROR : ', err);
-            return -1;
-            //throw err;
+            array.push(data);
         }
-    },
+        
+        const data2 = new Object();
+        data2.project_name = query1_result[0]["project_name"];
+        data2.scrap_count = query1_result[0]["scrap_count"];
+        data2.card_item = array;
+        return data2;
+
+    } catch (err) {
+        console.log('finalScarpList ERROR : ', err);
+        return -1;
+        //throw err;
+    }
+},
 
     checkProjectStatus: async(project_code) => {
         const query = `SELECT project_status FROM project WHERE project_code = "${project_code}"`;
