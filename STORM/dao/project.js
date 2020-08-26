@@ -330,13 +330,26 @@ module.exports = {
                                 WHERE round_idx in(SELECT round_idx from card WHERE card_idx = ${query2_result[i]["card_idx"]})`;
                 const query3_result = await pool.queryParam(query3);
 
+                const query4 = `SELECT card.user_idx, memo_content FROM card JOIN memo ON card.card_idx = memo.card_idx
+                                WHERE memo.user_idx = ${user_idx} AND card.card_idx = ${query2_result[i]["card_idx"]};`
+                const query4_result = await pool.queryParam(query4);
+
                 const data = new Object();
                 data.round_number = query3_result[0]["round_number"];
                 data.round_purpose = query3_result[0]["round_purpose"];
                 data.round_time = query3_result[0]["round_time"];
+                data.user_idx = query3_result[0]["user_idx"];
                 data.card_idx = query2_result[i]["card_idx"];
                 data.card_img = query2_result[i]["card_img"];
                 data.card_txt = query2_result[i]["card_txt"];
+                
+                //메모가 없을 경우 메모 테이블에 아예 데이터가 없어서 undefined로 오류남.. 일단 이렇게 잡음
+                try{
+                    data.memo_content = query4_result[0]["memo_content"];
+                }catch(err){
+                    data.memo_content = "";
+                }
+                
                 array.push(data);
             }
             
