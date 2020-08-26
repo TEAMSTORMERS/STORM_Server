@@ -64,7 +64,7 @@
                 "card_idx": 472,
                 "card_img": null,
                 "card_txt": "?",
-                "memo_content": ""
+                "memo_content": null
             }
         ]
     }
