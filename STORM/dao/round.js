@@ -236,7 +236,7 @@ module.exports = {
                 try{
                     memo = memo[0]["memo_content"];
                 }catch(err){
-                    memo = "";
+                    memo = null;
                 }
 
                 data2.card_idx = card_result[i]["card_idx"];
