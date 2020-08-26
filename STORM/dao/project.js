@@ -314,7 +314,7 @@ finalScarpList: async (user_idx, project_idx) => {
                     FROM project JOIN card ON project.project_idx = card.project_idx JOIN scrap ON scrap.card_idx = card.card_idx
                     WHERE project.project_idx = ${project_idx} AND scrap.user_idx = ${user_idx};`;
     
-    const query2 = `SELECT card.card_idx, card.card_img, card.card_txt, card.user_idx AS card_user_idx
+    const query2 = `SELECT card.card_idx, card.card_img, card.card_txt
                     FROM project JOIN card ON project.project_idx = card.project_idx JOIN scrap ON scrap.card_idx = card.card_idx
                     WHERE project.project_idx = ${project_idx} AND scrap.user_idx = ${user_idx};`
     
@@ -334,11 +334,15 @@ finalScarpList: async (user_idx, project_idx) => {
                             WHERE memo.user_idx = ${user_idx} AND card.card_idx = ${query2_result[i]["card_idx"]};`
             const query4_result = await pool.queryParam(query4);
 
+            const query5 = `SELECT user_img FROM user JOIN card ON user.user_idx = card.user_idx
+                            WHERE card_idx = ${query2_result[i]["card_idx"]};`
+            const query5_result = await pool.queryParam(query5);
+
             const data = new Object();
             data.round_number = query3_result[0]["round_number"];
             data.round_purpose = query3_result[0]["round_purpose"];
             data.round_time = query3_result[0]["round_time"];
-            data.user_idx = query2_result[i]["card_user_idx"];
+            data.user_img = query5_result[0]["user_img"];
             data.card_idx = query2_result[i]["card_idx"];
             data.card_img = query2_result[i]["card_img"];
             data.card_txt = query2_result[i]["card_txt"];
