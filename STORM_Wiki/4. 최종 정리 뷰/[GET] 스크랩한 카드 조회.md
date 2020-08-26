@@ -12,7 +12,7 @@
 
 | Method | URL             | 기능                |
 | :------: | :-----------------------: | :------------------------------: | 
-| GET    | /project/finalScarpList/:user_idx/:project_idx | 해당 프로젝트에서 스크랩한 모든 카드 리스트 출력 |
+| GET    | /project/finalScrapList/:user_idx/:project_idx | 해당 프로젝트에서 스크랩한 모든 카드 리스트 출력 |
 
 
 
