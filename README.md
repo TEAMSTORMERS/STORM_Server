@@ -47,7 +47,7 @@
 |기능|URL| HTTP Method|
 |----|---|------------|
 |[최종 프로젝트 정보 조회](https://github.com/TEAMSTORMERS/STORM_Server/blob/addWiki/STORM_Wiki/4.%20%EC%B5%9C%EC%A2%85%20%EC%A0%95%EB%A6%AC%20%EB%B7%B0/%5BGET%5D%20%EC%B5%9C%EC%A2%85%20%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8%20%EC%A0%95%EB%B3%B4%20%EC%A1%B0%ED%9A%8C.md)|/project/finalInfo/:project_idx|GET|
-|[스크랩한 카드 조회](https://github.com/TEAMSTORMERS/STORM_Server/blob/addWiki/STORM_Wiki/4.%20%EC%B5%9C%EC%A2%85%20%EC%A0%95%EB%A6%AC%20%EB%B7%B0/%5BGET%5D%20%EC%8A%A4%ED%81%AC%EB%9E%A9%ED%95%9C%20%EC%B9%B4%EB%93%9C%20%EC%A1%B0%ED%9A%8C.md)|/project/finalScarpList/:user_idx/:project_idx|GET|
+|[스크랩한 카드 조회](https://github.com/TEAMSTORMERS/STORM_Server/blob/addWiki/STORM_Wiki/4.%20%EC%B5%9C%EC%A2%85%20%EC%A0%95%EB%A6%AC%20%EB%B7%B0/%5BGET%5D%20%EC%8A%A4%ED%81%AC%EB%9E%A9%ED%95%9C%20%EC%B9%B4%EB%93%9C%20%EC%A1%B0%ED%9A%8C.md)|/project/finalScrpList/:user_idx/:project_idx|GET|
 |[라운드 별 정보 조회](https://github.com/TEAMSTORMERS/STORM_Server/blob/addWiki/STORM_Wiki/4.%20%EC%B5%9C%EC%A2%85%20%EC%A0%95%EB%A6%AC%20%EB%B7%B0/%5BGET%5D%20%EB%9D%BC%EC%9A%B4%EB%93%9C%EB%B3%84%20%EC%A0%95%EB%B3%B4%20%EC%A1%B0%ED%9A%8C.md)|/roundFinalInfo/:user_idx/:project_idx|GET|
 
 ## </br>
