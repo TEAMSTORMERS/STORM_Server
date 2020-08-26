@@ -50,7 +50,7 @@
                 "round_number": 1,
                 "round_purpose": "1",
                 "round_time": 1,
-                "user_idx": 1,
+                "user_img": "https://sopt-26-server.s3.ap-northeast-2.amazonaws.com/images/15979515585.JPEG",
                 "card_idx": 1,
                 "card_img": "1",
                 "card_txt": "1",
@@ -60,7 +60,7 @@
                 "round_number": 2,
                 "round_purpose": "2라운드",
                 "round_time": 10,
-                "user_idx": 3,
+                "user_img": "https://sopt-26-server.s3.ap-northeast-2.amazonaws.com/images/15982848830.JPEG",
                 "card_idx": 472,
                 "card_img": null,
                 "card_txt": "?",
@@ -76,7 +76,7 @@
 + round_number : 해당 카드가 생성된 라운드가 몇 라운드인지
 + round_purpose : 해당 카드가 생성된 라운드의 목표
 + round_time : 해당 라운드의 소요 시간
-+ user_idx: 카드 생성자의 유저 인덱스
++ user_img: 카드 생성자의 프로필 이미지
 + card_idx: 카드 인덱스
 + card_img: 카드 이미지
 + card_txt: 카드 텍스트
