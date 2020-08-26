@@ -11,7 +11,7 @@ router.get('/:project_idx', projectController.getProjectInfo);
 router.put('/status/:project_idx', projectController.setProjectStatus);
 router.put('/finish/:project_idx', projectController.finishProject);
 router.get('/finalInfo/:project_idx', projectController.finalInfo);
-router.get('/finalScarpList/:user_idx/:project_idx', projectController.finalScrapList);
+router.get('/finalScrapList/:user_idx/:project_idx', projectController.finalScrapList);
 
 //사용안함
 router.get('/enter/:project_idx', projectController.getProjectparticipant);
