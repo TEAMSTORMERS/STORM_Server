@@ -351,7 +351,7 @@ finalScarpList: async (user_idx, project_idx) => {
             try{
                 data.memo_content = query4_result[0]["memo_content"];
             }catch(err){
-                data.memo_content = "";
+                data.memo_content = null;
             }
 
             array.push(data);
