@@ -215,40 +215,19 @@ module.exports = {
         ));
     },
 
-    /*
     //프로젝트 나가기 - project_participant에서 해당 user 정보 삭제
-    deleteProjectparticipant: async (req, res) => {
-        const user_idx = req.params.user_idx;
+    deleteProject: async (req, res) => {
         const project_idx = req.params.project_idx;
 
         //값이 제대로 들어오지 않았을 경우
-        if (!user_idx || !project_idx) {
+        if (!project_idx) {
             res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
             return;
         }
 
-        // project_participant_idx 뽑아내기
-        const result = await ProjectDao.checkProjectParticipantIdx(user_idx, project_idx);
+        //프로젝트 삭제
+        const result = await ProjectDao.deleteProject(project_idx);
         if(result === -1){
-            return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
-        }
-        const project_participant_idx = result[0]["project_participant_idx"];
-        if (project_participant_idx === undefined) {
-            return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
-        }
-
-        //만약 호스트일 경우 체크
-        const ifHost = await ProjectDao.checkHost(project_participant_idx);
-        if(ifHost === 1) {
-            //방 안에 사람들이 더 있을 때 - 다른 사람에게 호스트를 넘김
-            //방 안에 사람들이 없을 때 - 방이 터짐..?
-        }else if(ifHost === -1){
-            return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
-        }
-        
-        //위의 조건들을 모두 체크 후 삭제하기
-        const fin = await ProjectDao.deleteProjectparticipant(project_participant_idx);
-        if(fin === -1){
             return res.status(statusCode.DB_ERROR).send(util.fail(statusCode.DB_ERROR, resMessage.DB_ERROR));
         }
 
@@ -256,7 +235,6 @@ module.exports = {
         return res.status(statusCode.OK)
             .send(util.success(statusCode.OK, resMessage.DELETE_PROJECT_PARTICIPANT_SUCCESS));
     },
-    */
 
     //프로젝트 시작할 경우 project_status를 1로 변경해서 중간 입장 불가능하도록
     setProjectStatus: async (req, res) => {

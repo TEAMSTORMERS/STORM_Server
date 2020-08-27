@@ -50,21 +50,6 @@ module.exports = {
         }
     },
 
-    /*
-    //project_code를 받았을 때 project_idx를 반환
-    checkProjectIdx: async (project_code) => {
-        const query = `SELECT project_idx FROM project WHERE project_code = "${project_code}"`;
-        try {
-            const result = await pool.queryParamArr(query);
-            return result;
-        } catch (err) {
-            console.log('checkProjectIdx ERROR : ', err);
-            return -1;
-            //throw err;
-        }
-    },
-    */
-
     //이미 존재하는 프로젝트 코드인지 확인
     checkAlreadyProjectCode : async (project_code) => {
         const query = `SELECT count(*) FROM project WHERE project_code = "${project_code}"`;
@@ -73,6 +58,20 @@ module.exports = {
             return result;
         } catch (err) {
             console.log('checkProjectStatus ERROR : ', err);
+            return -1;
+            //throw err;
+        }
+    },
+
+    //project_idx를 받았을 때 해당하는 프로젝트 정보를 삭제
+    deleteProject: async (project_idx) => {
+        const query = `DELETE FROM project WHERE project_idx = ${project_idx}`;
+
+        try {
+            const result = await pool.queryParam(query);
+            return result;
+        } catch (err) {
+            console.log('getProjectparticipant ERROR : ', err);
             return -1;
             //throw err;
         }
