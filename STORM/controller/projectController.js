@@ -93,7 +93,7 @@ module.exports = {
 
         //값이 제대로 들어오지 않았을 경우
         if (!project_code) {
-            res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_VALUE));
+            res.status(statusCode.BAD_REQUEST).send(util.fail(statusCode.BAD_REQUEST, resMessage.NULL_ERROR));
             return;
         }
 

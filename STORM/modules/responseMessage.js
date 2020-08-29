@@ -1,6 +1,7 @@
 module.exports = {
     NULL_VALUE: "필요한 값이 없습니다",
     OUT_OF_VALUE: "파라미터 값이 잘못되었습니다",
+    NULL_ERROR : "오류가 발생했습니다.",
 
     // 회원가입
     CREATED_USER: "회원 가입 성공",
@@ -28,11 +29,11 @@ module.exports = {
     CHANGE_PROFILE_NAME_SUCCESS : "프로필 닉네임 수정 성공",
     
     //프로젝트
-    WRONG_CODE : "유효하지 않은 코드입니다.",
+    WRONG_CODE : "유효하지 않은 참여 코드입니다.",
     CREATED_PROJECT_SUCCESS: "프로젝트 생성 성공",
     CREATED_PROJECT_FAIL : "프로젝트 생성 실패",
-    CANNOT_JOIN : "이미 프로젝트가 진행중입니다.",
-    ROUND_NOT_PREPARED : "지금은 호스트가 준비 중입니다.",
+    CANNOT_JOIN : "이미 프로젝트가 진행 중입니다.",
+    ROUND_NOT_PREPARED : "호스트가 프로젝트를 준비 중입니다.",
     JOIN_PROJECT_SUCCESS: "프로젝트 참여 성공",
     READ_PROJECT_INFO : "프로젝트 정보 출력 성공",
     SHOW_PROJECT_LIST_SUCCESS : "참여한 프로젝트의 리스트 조회 성공",
