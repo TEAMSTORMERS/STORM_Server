@@ -5,9 +5,47 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
 
 var app = express();
+app.io = require('socket.io')();
+
+app.io.on('connection', (socket) => {
+
+  //새로운 참여자가 프로젝트에 참여했을 경우
+  socket.on('joinRoom', roomCode => {
+    socket.join(roomCode, () => {
+      app.io.to(roomCode).emit('roundComplete', '참여자 목록 리로드');
+    });
+  });
+  //호스트가 라운드 시작 버튼을 눌렀을 경우
+  socket.on('roundStartHost', (roomCode) => {
+    app.io.to(roomCode).emit('roundStartMember', '라운드 시작');
+  });
+  //호스트가 다음 라운드 진행 버튼을 눌렀을 경우
+  socket.on('prepareNextRound', (roomCode) => {
+    app.io.to(roomCode).emit('waitNextRound', '다음 라운드 설정 중');
+  });
+  //호스트가 다음 라운드 설정을 완료했을 경우
+  socket.on('nextRound', (roomCode) => {
+    app.io.to(roomCode).emit('memberNextRound', '다음 라운드 설정 완료');
+  });
+  //멤버가 다음 라운드에 입장할 경우
+  socket.on('enterNextRound', (roomCode) => {
+    app.io.to(roomCode).emit('roundComplete', '참여자 목록 리로드');
+  });
+  //호스트가 프로젝트 종료 버튼을 눌렀을 경우
+  socket.on('finishProject', (roomCode) => {
+    app.io.to(roomCode).emit('memberFinishProject', roomCode);
+  });
+  //라운드 시작 전 프로젝트를 나갔을 경우
+  socket.on('leaveRoom', (roomCode) => {
+    socket.leave(roomCode, () => {
+      app.io.to(roomCode).emit('roundComplete');
+    });
+  });
+  socket.on('disconnect', () => {
+  });
+});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -20,15 +58,15 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
