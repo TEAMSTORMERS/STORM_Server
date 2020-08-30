@@ -16,8 +16,8 @@
 <br> 각 라운드 후에는 팀원들이 함께 의견을 나눌 수 있습니다.
 <br> 프로젝트가 끝난 뒤에는 최종 정리를 통해 라운드 및 카드 목록을 한눈에 볼 수 있으며,
 <br> 좋은 아이디어 카드들은 따로 스크랩해 모아볼 수 있습니다.
-<br><br>RELEASE 1.0 개발 기간 : ~2020-08-20 <br>
-[📄API 명세서](https://github.com/TEAMSTORMERS/STORM_Server/wiki)<br>
+<br><br>Release v1.1.0 개발 기간 : ~2020-08-30 <br>
+[📄API 명세서](https://github.com/TEAMSTORMERS/STORM_Server/tree/addWiki)<br>
 
 <br>
 
@@ -48,14 +48,8 @@
 <br>
 <br>
 
-## ⚡️Functional Specification
-[📄기능명세서](https://docs.google.com/spreadsheets/d/1a4JL1O6FLVjjnCx7rg4781ici10yg-ZGDMqT5empflk/edit#gid=686412120)
-
-<br>
-<br>
-
 ## ⚡️ER Diagram
-![erd](https://user-images.githubusercontent.com/55133871/87429972-81ab6280-c61f-11ea-9679-d6ed564b2dbd.png)
+![erd_release_1 1 0](https://user-images.githubusercontent.com/55133871/91662214-f37e3380-eb1b-11ea-9899-6999e0209ab5.PNG)
 
 <br>
 <br>
@@ -67,7 +61,7 @@
 
 ## ⚡️Dependencies Module
 ```
-"dependencies": {
+  "dependencies": {
     "aws-sdk": "^2.735.0",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
@@ -83,7 +77,7 @@
     "promise-mysql": "^4.1.3",
     "rand-token": "^1.0.1",
     "socket.io": "^2.3.0"
-}
+  }
 ```
 
 <br>
