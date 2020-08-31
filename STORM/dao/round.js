@@ -174,7 +174,7 @@ module.exports = {
 
     //round_idx를 받았을 때 user_idx를 반환
     roundMemberList: async(project_idx, round_idx) => {
-        const query1 = `SELECT rp.user_idx
+        const query1 = `SELECT distinct rp.user_idx
                         FROM round_participant rp JOIN round r ON r.round_idx = rp.round_idx
                         WHERE r.round_idx = ${round_idx}`;
 
@@ -271,7 +271,7 @@ module.exports = {
             var array = [];
 
             for (var i = 0; i < result.length; i++) {
-                const query2 = `select user_name, user_img
+                const query2 = `select distinct user_name, user_img
                                 FROM user u JOIN round_participant rp ON u.user_idx = rp.user_idx 
                                 JOIN round r ON r.round_idx = rp.round_idx 
                                 JOIN project p ON p.project_idx = r.project_idx 
